@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM cptactionhank/ubuntu:trusty
 MAINTAINER cptactionhank <cptactionhank@users.noreply.github.com>
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AC857259 \
@@ -6,8 +6,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AC857259 \
        > /etc/apt/sources.list.d/launchpad-ali-asad-lotia-netatalk.list
 
 RUN apt-get update -qq \
-    && apt-get -yqq install netatalk libnss-ldap ldap-utils \
-    && auth-client-config -t nss -p lac_ldap
+    && apt-get -yqq install netatalk
 
 EXPOSE 548
 
