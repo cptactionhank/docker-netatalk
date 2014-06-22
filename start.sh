@@ -3,5 +3,5 @@
 set -eu
 
 netatalk -F /etc/netatalk/afp.conf
-sleep 1
+sleep 2
 tail -f /var/log/netatalk.log

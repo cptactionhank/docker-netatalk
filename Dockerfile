@@ -12,6 +12,6 @@ EXPOSE 548
 
 VOLUME ["/etc/netatalk", "/var/lib/netatalk"]
 
-ADD start.sh /usr/local/bin/start
+ADD start.sh /start
 
-ENTRYPOINT start
+ENTRYPOINT /start
