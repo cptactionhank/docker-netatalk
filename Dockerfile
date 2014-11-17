@@ -3,7 +3,7 @@ MAINTAINER cptactionhank <cptactionhank@users.noreply.github.com>
 
 RUN set -x \
 		&& apt-get update --quiet \
-		&& apt-get install --quiet --yes --no-install-recommends nano \
+		&& apt-get install --quiet --yes --no-install-recommends nano libnss-ldap ldap-utils \
 				libevent-2.0-5 \
 				libssl1.0.0 \
 				libgcrypt11 \
