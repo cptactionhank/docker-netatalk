@@ -3,7 +3,7 @@ MAINTAINER cptactionhank <cptactionhank@users.noreply.github.com>
 
 RUN set -x \
 		&& apt-get update --quiet \
-		&& apt-get install --quiet --yes --no-install-recommends nano libnss-ldap ldap-utils \
+		&& apt-get install --quiet --yes --no-install-recommends nano libnss-ldap ldap-utils auth-client-config libpam-ldap ldap-auth-config\
 				libevent-2.0-5 \
 				libssl1.0.0 \
 				libgcrypt11 \
@@ -24,7 +24,8 @@ RUN set -x \
 				libtracker-sparql-0.16-0 \
 				libtracker-miner-0.16-0 \
 				tracker \
-		&& apt-get clean 
+		&& apt-get clean \
+		&& auth-client-config -t nss -p lac_ldap
 
 COPY package /
 
