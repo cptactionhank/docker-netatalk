@@ -17,7 +17,7 @@ old_library='uams_dhx2_pam.a'
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' -L/lib/x86_64-linux-gnu -lgcrypt -lpam -ldl -lcrack'
+dependency_libs=' -lgcrypt -lpam -ldl -lcrack'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''

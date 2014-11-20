@@ -1,4 +1,4 @@
-FROM debian:wheezy
+FROM ubuntu:trusty
 MAINTAINER cptactionhank <cptactionhank@users.noreply.github.com>
 
 ENV VERSION 3.1.6
@@ -21,8 +21,8 @@ RUN apt-get update -qqy \
 			 libpam0g-dev \
 			 libssl-dev \
 			 libtdb-dev \
-			 libtracker-miner-0.14-dev \
-			 libtracker-sparql-0.14-dev \
+			 libtracker-miner-0.16-dev \
+			 libtracker-sparql-0.16-dev \
 			 libwrap0-dev \
 			 systemtap-sdt-dev \
 			 tracker \
@@ -36,7 +36,7 @@ RUN curl -SsL http://sourceforge.net/projects/netatalk/files/netatalk/${VERSION}
 RUN ./configure \
         --with-pam-confdir=/etc/pam.d \
         --with-pkgconfdir=/etc/netatalk \
-        --with-tracker-pkgconfig-version=0.14 \
+        --with-tracker-pkgconfig-version=0.16 \
         --with-cracklib \
         --with-acls \
         --with-init-style=debian-sysv \

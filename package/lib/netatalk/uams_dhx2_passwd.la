@@ -17,7 +17,7 @@ old_library='uams_dhx2_passwd.a'
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' -lcrypt -L/lib/x86_64-linux-gnu -lgcrypt -ldl -lcrack'
+dependency_libs=' -lcrypt -lgcrypt -ldl -lcrack'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''

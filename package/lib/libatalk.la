@@ -17,7 +17,7 @@ old_library='libatalk.a'
 inherited_linker_flags=' -pthread'
 
 # Libraries that this one depends upon.
-dependency_libs=' -lwrap -L/usr/lib/x86_64-linux-gnu -lacl -lattr -lldap -ltdb -lmysqlclient -lpthread -lz -lm -lrt -ldl -lcrack'
+dependency_libs=' -lwrap -L/usr/lib/x86_64-linux-gnu -lacl -lattr -lldap -ltdb -lmysqlclient -lpthread -lz -lm -ldl -lcrack'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''

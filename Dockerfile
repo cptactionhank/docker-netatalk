@@ -1,4 +1,4 @@
-FROM debian:wheezy
+FROM ubuntu:14.04
 MAINTAINER cptactionhank <cptactionhank@users.noreply.github.com>
 
 RUN set -x \
@@ -21,12 +21,14 @@ RUN set -x \
 				libdbus-1-3 \
 				libdbus-glib-1-2 \
 				libglib2.0-0 \
-				libtracker-sparql-0.14-0 \
-				libtracker-miner-0.14-0 \
+				libtracker-sparql-0.16-0 \
+				libtracker-miner-0.16-0 \
 				tracker \
 		&& apt-get clean 
 
 COPY package /
+
+EXPOSE 548
 
 VOLUME ["/var/netatalk", "/etc/netatalk"]
 
