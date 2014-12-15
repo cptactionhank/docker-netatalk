@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+trap "exit" SIGHUP SIGINT SIGTERM
+
+# starting in ACKNOWLEDGED state
+KILL=no
+
+while [ ! "$KILL" = "yes" ]; do
+
+	# transition from ACKNOWLEDGED to READY state
+	echo -ne "READY\n"
+
+	# wait for an event to occur
+	read line
+
+  # get the package length
+  len=$(echo "$line" | awk -F ':' '/len/{printf $2}'   RS=' ')
+  evt=$(echo "$line" | awk -F ':' '/eventname/{printf $2}' RS=' ')
+  
+  # read the event package
+  read -n "$len"
+
+  # test if it's a fatal event
+  if [ "$evt" = "PROCESS_STATE_FATAL" ]; then
+  	KILL="yes"
+  fi
+
+  # send processed event with success
+  echo -ne "RESULT 2\nOK"
+
+done
+
+# WE GOT a FATAL event and thus we wish to terminate supervisorctl and so we 
+
+# first try and close remaining processed
+/usr/bin/supervisorctl stop "$(/usr/bin/supervisorctl status | awk '{ if ( $1 != "fatal-event-helper" && $2 == "RUNNING" ) print $1 }')"
+
+# kill supervisor such that it will return an error exit code
+kill -9 "$(/usr/bin/supervisorctl pid)"
