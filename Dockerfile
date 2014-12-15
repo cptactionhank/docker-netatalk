@@ -4,7 +4,7 @@ MAINTAINER cptactionhank <cptactionhank@users.noreply.github.com>
 ENV NETATALK_MAJOR 3.1
 ENV NETATALK_VERSION 3.1.7
 
-COPY ./root/usr/src /usr/src
+COPY ./root /
 
 RUN set -x \
 	&& RUNTMDEPS="supervisor python-dbus dbus-x11 avahi-daemon tracker tracker-extract tracker-miner-fs tracker-utils libevent-2.0-5  libssl1.0.0  libgssapi-krb5-2 libk5crypto3 libkrb5-3 libwrap0 libdb5.1 libtdb1 libmysqlclient18 libavahi-client3 libcrack2 cracklib-runtime python libdbus-1-3 libdbus-glib-1-2 libglib2.0-0 libtracker-sparql-0.14-0" \
@@ -35,8 +35,6 @@ RUN set -x \
 	&& apt-get --quiet --yes autoclean \
 	&& apt-get --quiet --yes autoremove \
 	&& apt-get --quiet --yes clean
-
-COPY ./root /
 
 EXPOSE 548
 
