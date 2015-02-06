@@ -36,7 +36,7 @@ RUN set -x \
 	&& apt-get --quiet --yes autoremove \
 	&& apt-get --quiet --yes clean
 
-EXPOSE 548 5353/udp
+EXPOSE 548 636 5353/udp
 
 VOLUME ["/var/netatalk", "/etc/netatalk"]
 
