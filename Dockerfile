@@ -7,7 +7,7 @@ ENV NETATALK_VERSION 3.1.7
 COPY ./root /
 
 RUN set -x \
-	&& RUNTMDEPS="libnss-ldap supervisor python-dbus dbus-x11 avahi-daemon tracker tracker-extract tracker-miner-fs tracker-utils libevent-2.0-5  libssl1.0.0  libgssapi-krb5-2 libk5crypto3 libkrb5-3 libwrap0 libdb5.1 libtdb1 libmysqlclient18 libavahi-client3 libcrack2 cracklib-runtime python libdbus-1-3 libdbus-glib-1-2 libglib2.0-0 libtracker-sparql-0.14-0" \
+	&& RUNTMDEPS="libnss-ldap libpam-ldap supervisor python-dbus dbus-x11 avahi-daemon tracker tracker-extract tracker-miner-fs tracker-utils libevent-2.0-5  libssl1.0.0  libgssapi-krb5-2 libk5crypto3 libkrb5-3 libwrap0 libdb5.1 libtdb1 libmysqlclient18 libavahi-client3 libcrack2 cracklib-runtime python libdbus-1-3 libdbus-glib-1-2 libglib2.0-0 libtracker-sparql-0.14-0" \
 	&& BUILDDEPS="curl bzip2 gcc gcc-4.7 cpp cpp-4.7 make patch libevent-dev libssl-dev libgcrypt11-dev libkrb5-dev libpam0g-dev libwrap0-dev libdb-dev libtdb-dev libmysqlclient-dev libavahi-client-dev libacl1-dev libldap2-dev libcrack2-dev systemtap-sdt-dev libdbus-1-dev libdbus-glib-1-dev libglib2.0-dev tracker libtracker-sparql-0.14-dev libtracker-miner-0.14-dev" \
 	&& apt-get --quiet --yes update \
 	&& apt-get --quiet --yes install --no-install-recommends ${RUNTMDEPS} ${BUILDDEPS} \
