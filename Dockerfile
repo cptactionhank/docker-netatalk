@@ -13,7 +13,7 @@ RUN set -x \
 	&& apt-get --quiet --yes update \
 	&& apt-get --quiet --yes install --no-install-recommends ${RUNTMDEPS} ${BUILDDEPS} \
 	&& rm -rf "/var/lib/apt/lists/*" \
-	&& pam-auth-update ldap \
+	&& pam-auth-update --package ldap \
 	&& mkdir -p "/usr/src/netatalk/netatalk-${NETATALK_VERSION}" \
 	&& cd "/usr/src/netatalk/netatalk-${NETATALK_VERSION}" \
 	&& curl -SL "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.bz2" \
