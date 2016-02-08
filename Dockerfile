@@ -2,7 +2,7 @@ FROM debian:wheezy
 MAINTAINER cptactionhank <cptactionhank@users.noreply.github.com>
 
 ENV NETATALK_MAJOR 3.1
-ENV NETATALK_VERSION 3.1.7
+ENV NETATALK_VERSION 3.1.8
 
 COPY ./root /
 
