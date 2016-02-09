@@ -1,7 +1,5 @@
 # Netatalk in a Docker container
 
-[![Docker Build Status](http://hubstatus.container42.com/cptactionhank/netatalk)](https://registry.hub.docker.com/u/cptactionhank/netatalk) 
-
 An environment running AFP filesharing, Tracker (search/spotlight integration), and mDNS server for service discovery.
 
 ## I'm in the fast lane! Get me started
@@ -13,10 +11,10 @@ docker run --detach --publish 548:548 cptactionhank/netatalk:latest
 
 Important: This does not announce the AFP service on the network; connecting to the server should be by Finder's Go -> Connect Server (CMD+K) and then typing `afp://servername`
 
-Default configuration of Netatalk has one share called _My AFP Share_ and shares to containers `/media` directory. So host mounting a volume to this path will be the quickest way to start sharing files from your host.
+Default configuration of Netatalk has one share called _share_ and shares to containers `/share` directory. So host mounting a volume to this path will be the quickest way to start sharing files from your host.
 
 ```bash
-docker run --detach --volume hostpath:/media --publish 548:548 cptactionhank/netatalk:latest
+docker run --detach --volume hostpath:/share --publish 548:548 cptactionhank/netatalk:latest
 ```
 
 ## The slower road
@@ -25,14 +23,14 @@ With the slower roads documentation some knowledge in administering Docker is im
 
 ### Configuring shares
 
-There are two ways of configuring the Netatalk which is either by mounting a configuration file or editing the file from the container itself. Documentation of the configuration file `/etc/netatalk/afp.conf` can be found [here](http://netatalk.sourceforge.net/3.1/htmldocs/afp.conf.5.html).
+There are two ways of configuring the Netatalk which is either by mounting a configuration file or editing the file from the container itself. Documentation of the configuration file `/etc/afp.conf` can be found [here](http://netatalk.sourceforge.net/3.1/htmldocs/afp.conf.5.html).
 
 #### Host mounted configuration
 
 This is quite a simple way to change the configuration by supplying an additional docker flag when creating the container.
 
 ```bash
-... --volume hostpath:/etc/netatalk/afp.conf cptactionhank/netatalk
+... --volume hostpath:/etc/afp.conf cptactionhank/netatalk
 ```
 #### Container edited configuration
 
@@ -48,18 +46,36 @@ If you would like to use an editor like nano, emacs, or vi you have to install i
 
 ### Setting up access credentials
 
-The container comes installed with `libnss-ldap` and `libpam-ldap` if you want to use LDAP for authentication, however this is out of scope of this README. So instead we can do the simple thing of creating new Debian users to the container.
+If you supply environment variables to `docker run`
+
+- AFP_USER        create a user in the container and allow it access to /share
+- AFP_PASSWORD    password
+- AFP_UID         uid of the created user
+- AFP_GID         gid of the created user
+
+Example:
 
 ```bash
-docker exec -ti containername adduser --no-create-home timemachine
+docker run -d \
+-v /mnt/sda1/share:/share \
+--name=afp \
+--net=host \
+-e AFP_USER=$(id -un) \
+-e AFP_PASSWORD=secret \
+-e AFP_UID=$(id -u) \
+-e AFP_GID=$(id -g) \
+cptactionhank/netatalk
 ```
 
-And then the shares could be configured with a share like
+This replaces all occurences of %USER% in afp.conf with AFP_USER
 
 ```ini
-[Secured Share]
-path = /media/secure
-valid users = timemachine
+[Global]
+log file = /var/log/netatalk.log
+
+[share]
+path = /share
+valid users = %USER%
 ```
 
 ### Service discovery
