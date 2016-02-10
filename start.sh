@@ -18,5 +18,9 @@ cat /etc/afp.conf
 echo ---end---afp.conf--
 mkdir /var/run/dbus
 dbus-daemon --system
-avahi-daemon -D
+if [ "${AVAHI}" == "1" ]; then
+    avahi-daemon -D
+else
+    echo "Skipping avahi daemon, enable with env variable AVAHI=1"
+fi;
 exec netatalk -d
