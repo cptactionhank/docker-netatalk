@@ -11,17 +11,12 @@ if [ ! -z "${AFP_USER}" ]; then
         echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
     fi
 fi
-[ ! -d /share ] && mkdir /share && chown ${AFP_USER} /share && echo "use -v /my/dir/to/share:/share" > readme.txt
-sed -i'' -e "s,%USER%,${AFP_USER},g" /etc/afp.conf
+[ ! -d /media/share ] && mkdir /media/share && chown "${AFP_USER}" /media/share && echo "use -v /my/dir/to/share:/media/share" > readme.txt
+sed -i'' -e "s,%USER%,${AFP_USER:-},g" /etc/afp.conf
 echo ---begin-afp.conf--
 cat /etc/afp.conf
 echo ---end---afp.conf--
 mkdir /var/run/dbus
 dbus-daemon --system
 avahi-daemon -D
-netatalk
-while true; do
-LOG=/var/log/netatalk.log
-[ -f ${LOG} ] && tail -f ${LOG}
-sleep 1;
-done
+exec netatalk -d
