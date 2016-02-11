@@ -57,8 +57,8 @@ docker run --detach \
     --net "host" \
     --env AFP_USER=$(id -un) \
     --env AFP_PASSWORD=secret \
-    --env AFP_UID=$(id --user) \
-    --env AFP_GID=$(id --group) \
+    --env AFP_UID=$(id -u) \
+    --env AFP_GID=$(id -g) \
     cptactionhank/netatalk:latest
 ```
 
