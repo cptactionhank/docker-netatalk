@@ -54,6 +54,7 @@ RUN DEPS="build-essential libevent-dev libssl-dev libgcrypt11-dev libkrb5-dev li
  && rm -rf /var/lib/apt/lists* \
  && mkdir /media/share
 
-COPY start.sh /
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY afp.conf /etc/afp.conf
-CMD /start.sh
+
+CMD ["/docker-entrypoint.sh"]
