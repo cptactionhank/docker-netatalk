@@ -12,9 +12,9 @@ RUN apt-get install \
         tracker \
         avahi-daemon \
         curl
-RUN curl -O -SL "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.bz2"
-RUN tar xjf netatalk-${NETATALK_VERSION}.tar.bz2
-WORKDIR netatalk-${NETATALK_VERSION}
+RUN curl -O -SL "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/3.1.8/netatalk-3.1.8.tar.bz2"
+RUN tar xjf netatalk-3.1.8.tar.bz2
+WORKDIR netatalk-3.1.8
 RUN ./configure \
         --prefix=/usr \
         --sysconfdir=/etc \
