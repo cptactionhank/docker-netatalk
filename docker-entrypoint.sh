@@ -28,6 +28,7 @@ echo ---end---afp.conf--
 mkdir /var/run/dbus
 dbus-daemon --system
 if [ "${AVAHI}" == "1" ]; then
+    sed -i '/rlimit-nproc/d' /etc/avahi/avahi-daemon.conf
     avahi-daemon -D
 else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
