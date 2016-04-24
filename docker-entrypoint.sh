@@ -6,6 +6,7 @@ if [ ! -z "${AFP_USER}" ]; then
     fi
     if [ ! -z "${AFP_GID}" ]; then
         cmd="$cmd --gid ${AFP_GID}"
+        groupadd --gid ${AFP_GID} ${AFP_USER}
     fi
     adduser $cmd --no-create-home --disabled-password --gecos '' "${AFP_USER}"
     if [ ! -z "${AFP_PASSWORD}" ]; then
