@@ -6,6 +6,7 @@ if [ ! -z "${AFP_USER}" ]; then
     fi
     if [ ! -z "${AFP_GID}" ]; then
         cmd="$cmd --gid ${AFP_GID}"
+        groupadd --gid ${AFP_GID} ${AFP_USER}
     fi
     adduser $cmd --no-create-home --disabled-password --gecos '' "${AFP_USER}"
     if [ ! -z "${AFP_PASSWORD}" ]; then
@@ -25,9 +26,11 @@ echo ---begin-afp.conf--
 cat /etc/afp.conf
 echo ---end---afp.conf--
 
-mkdir /var/run/dbus
+mkdir -p /var/run/dbus
+rm -f /var/run/dbus/pid
 dbus-daemon --system
 if [ "${AVAHI}" == "1" ]; then
+    sed -i '/rlimit-nproc/d' /etc/avahi/avahi-daemon.conf
     avahi-daemon -D
 else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
