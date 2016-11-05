@@ -16,9 +16,15 @@ fi
 
 if [ ! -d /media/share ]; then
   mkdir /media/share
-  chown "${AFP_USER}" /media/share
   echo "use -v /my/dir/to/share:/media/share" > readme.txt
 fi
+chown "${AFP_USER}" /media/share
+
+if [ ! -d /media/timemachine ]; then
+  mkdir /media/timemachine
+  echo "use -v /my/dir/to/timemachine:/media/timemachine" > readme.txt
+fi
+chown "${AFP_USER}" /media/timemachine
 
 sed -i'' -e "s,%USER%,${AFP_USER:-},g" /etc/afp.conf
 
