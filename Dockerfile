@@ -15,10 +15,7 @@ RUN apt-get update \
         tracker \
         avahi-daemon \
         curl wget \
-        &&  wget      "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/3.1.8/netatalk-3.1.8.tar.gz" \
-        &&  curl -SL  "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/3.1.8/netatalk-3.1.8.tar.gz" | tar xvz
 
-WORKDIR netatalk-3.1.8
 
 RUN ./configure \
         --prefix=/usr \
@@ -46,6 +43,9 @@ RUN ./configure \
         libmysqlclient18 \
         libcrack2 \
         libdbus-glib-1-2 \
+        && curl -sSL  http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.gz -O \
+        && tar fxvz netatalk-${NETATALK_VERSION}.tar.gz \
+        && cd netatalk-${NETATALK_VERSION} \
         &&  apt-get --quiet --yes autoclean \
          &&  apt-get --quiet --yes autoremove \
           &&  apt-get --quiet --yes clean \
@@ -58,6 +58,8 @@ RUN ./configure \
                  &&  rm -rf /usr/share/GeoIP \
                   &&  rm -rf /var/lib/apt/lists* \
                    &&  mkdir /media/share
+        &&  cd / \
+        &&  rm -rf netatalk-${NETATALK_VERSION} \
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY afp.conf /etc/afp.conf
