@@ -76,19 +76,18 @@ RUN     apt-get update \
         &&  apt-get install --yes $PERSISTENT_RUNTIME_DEPS \
         \
         &&  apt-get --quiet --yes autoclean \
-         &&  apt-get --quiet --yes autoremove \
-          &&  apt-get --quiet --yes clean \
-           &&  rm -rf /netatalk* \
-            &&  rm -rf /usr/share/man \
-             &&  rm -rf /usr/share/doc \
-              &&  rm -rf /usr/share/icons \
-               &&  rm -rf /usr/share/poppler \
-                &&  rm -rf /usr/share/mime \
-                 &&  rm -rf /usr/share/GeoIP \
-                  &&  rm -rf /var/lib/apt/lists* \
-                   &&  mkdir /media/share
+        &&  apt-get --quiet --yes autoremove \
+        &&  apt-get --quiet --yes clean \
         &&  cd / \
         &&  rm -rf netatalk-${NETATALK_VERSION} \
+        &&  rm -rf /usr/share/man \
+        &&  rm -rf /usr/share/doc \
+        &&  rm -rf /usr/share/icons \
+        &&  rm -rf /usr/share/poppler \
+        &&  rm -rf /usr/share/mime \
+        &&  rm -rf /usr/share/GeoIP \
+        &&  rm -rf /var/lib/apt/lists* \
+        &&  mkdir -p /media/share
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY afp.conf /etc/afp.conf
