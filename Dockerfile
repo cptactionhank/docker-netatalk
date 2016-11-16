@@ -27,6 +27,15 @@ ENV BUILD_DEPS  \
                 libtracker-miner-1.0-dev \
                 file
 
+ENV PERSISTENT_RUNTIME_DEPS \
+                libevent-2.0 \
+                libavahi-client3 \
+                libevent-core-2.0 \
+                libwrap0 \
+                libtdb1 \
+                libmysqlclient18 \
+                libcrack2 \
+                libdbus-glib-1-2 
 
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -63,6 +72,8 @@ RUN     apt-get update \
                 $BUILD_DEPS \
                 tracker-gui \
                 libgl1-mesa-dri \
+        \
+        &&  apt-get install --yes $PERSISTENT_RUNTIME_DEPS \
         \
         &&  apt-get --quiet --yes autoclean \
          &&  apt-get --quiet --yes autoremove \
