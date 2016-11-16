@@ -17,17 +17,6 @@ RUN apt-get update \
         curl wget \
 
 
-RUN ./configure \
-        --prefix=/usr \
-        --sysconfdir=/etc \
-        --with-init-style=debian-systemd \
-        --without-libevent \
-        --without-tdb \
-        --with-cracklib \
-        --enable-krbV-uam \
-        --with-pam-confdir=/etc/pam.d \
-        --with-dbus-sysconf-dir=/etc/dbus-1/system.d \
-        --with-tracker-pkgconfig-version=1.0 \
         &&  make \
          &&  make install \
           &&  apt-get --quiet --yes purge --auto-remove \
@@ -46,6 +35,18 @@ RUN ./configure \
         && curl -sSL  http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.gz -O \
         && tar fxvz netatalk-${NETATALK_VERSION}.tar.gz \
         && cd netatalk-${NETATALK_VERSION} \
+        \
+        && ./configure \
+                --prefix=/usr \
+                --sysconfdir=/etc \
+                --with-init-style=debian-systemd \
+                --without-libevent \
+                --without-tdb \
+                --with-cracklib \
+                --enable-krbV-uam \
+                --with-pam-confdir=/etc/pam.d \
+                --with-dbus-sysconf-dir=/etc/dbus-1/system.d \
+                --with-tracker-pkgconfig-version=1.0 \
         &&  apt-get --quiet --yes autoclean \
          &&  apt-get --quiet --yes autoremove \
           &&  apt-get --quiet --yes clean \
