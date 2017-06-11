@@ -12,10 +12,10 @@ RUN apt-get update \
         tracker \
         avahi-daemon \
         curl wget \
-        &&  wget      "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/3.1.8/netatalk-3.1.8.tar.gz" \
-        &&  curl -SL  "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/3.1.8/netatalk-3.1.8.tar.gz" | tar xvz
+        &&  wget      "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.gz" \
+        &&  curl -SL  "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.gz" | tar xvz
 
-WORKDIR netatalk-3.1.8
+WORKDIR netatalk-${NETATALK_VERSION}
 
 RUN ./configure \
         --prefix=/usr \
@@ -58,5 +58,6 @@ RUN ./configure \
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY afp.conf /etc/afp.conf
+ENV DEBIAN_FRONTEND=newt
 
 CMD ["/docker-entrypoint.sh"]
