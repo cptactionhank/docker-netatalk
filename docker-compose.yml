@@ -1,0 +1,20 @@
+version: '2'
+services:
+  netatalk:
+    image: cptactionhank/netatalk:latest
+    container_name: netatalk
+    ports:
+      - "548:548"
+    volumes:
+     - /opt/netatalk:/media/share
+    network_mode: "host"
+    restart: always
+    environment:
+      - AVAHI=1
+      - AFP_USER=edodd
+      - AFP_PASSWORD=secret1
+      - AFP_UID=1000
+      - AFP_GID=1000
+volumes:
+  netatalk_data:
+    driver: local
