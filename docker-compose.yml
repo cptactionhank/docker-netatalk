@@ -1,12 +1,12 @@
 version: '2'
 services:
   netatalk:
-    image: cptactionhank/netatalk:latest
+    image: netatalk:alpine
     container_name: netatalk
     ports:
       - "548:548"
     volumes:
-     - /opt/netatalk:/media/share
+     - ~/opt/netatalk:/media/share
     network_mode: "host"
     restart: always
     environment:
