@@ -2,14 +2,7 @@
 
 setup(){
     if [[ -n "${AFP_USER}" ]]; then
-        if [[ -n "${AFP_UID}" ]]; then
-            cmd="$cmd -u ${AFP_UID}"
-        fi
-        if [[ -n "${AFP_GID}" ]]; then
-            cmd="$cmd -g ${AFP_GID}"
-            addgroup -g ${AFP_GID} ${AFP_USER}
-        fi
-        adduser $cmd -h -D -G '' "${AFP_USER}"
+        adduser -u ${AFP_UID} -g ${AFP_GID} -H -D "${AFP_USER}"
         if [[ -n "${AFP_PASSWORD}" ]]; then
             echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
         fi
