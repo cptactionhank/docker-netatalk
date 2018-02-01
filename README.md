@@ -1,6 +1,15 @@
 # Netatalk in a Docker container
 
-An container serving [Apple Filing Protocol](https://en.wikipedia.org/wiki/Apple_Filing_Protocol) file sharing, Tracker (search/spotlight integration), and mDNS server for service discovery.
+A container serving [Apple Filing Protocol](https://en.wikipedia.org/wiki/Apple_Filing_Protocol) file sharing, Tracker (search/spotlight integration), and mDNS server for service discovery.
+
+## I'm on a jet! Gimme!
+Ensure the 'environment' parameters in docker-compose.yml are correct for you.
+
+Run:
+```
+docker-compose up
+```
+
 
 ## I'm in the fast lane! Get me started
 
