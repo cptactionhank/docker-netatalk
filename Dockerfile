@@ -22,6 +22,8 @@ RUN apk update && \
       file \
       acl \
       openssl \
+      avahi \
+      tdb-libs \
       supervisor && \
     apk add --no-cache --virtual .build-deps \
       build-base \
@@ -31,7 +33,6 @@ RUN apk update && \
       libgcrypt-dev \
       linux-pam-dev \
       krb5-dev \
-      tdb-libs \
       tdb-dev \
       cracklib-dev \
       acl-dev \
