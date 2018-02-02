@@ -54,6 +54,7 @@ RUN    curl -o netatalk-${NETATALK_VERSION}.tar.gz -L https://downloads.sourcefo
       --with-cracklib \
       --enable-krbV-uam \
       --with-pam-confdir=/etc/pam.d \
+      --disable-shell-check \
       --with-dbus-sysconf-dir=/etc/dbus-1/system.d \
       --with-tracker-pkgconfig-version=1.0 && \
       make && \
