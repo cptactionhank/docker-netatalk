@@ -26,6 +26,9 @@ setup(){
     dbus-daemon --system
     if [[ "${AVAHI}" == "1" ]]; then
         sed -i '/rlimit-nproc/d' /etc/avahi/avahi-daemon.conf
+        if [[ -e /var/run/avahi-daemon/pid ]] ; then
+            rm -f /var/run/avahi-daemon/pid
+        fi
         avahi-daemon -D
     else
         echo "Skipping avahi daemon. Set AVAHI=1 to enable."
