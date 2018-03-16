@@ -42,4 +42,7 @@ else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
 fi;
 
+# remove any previous lockfile that wasn't cleaned up
+rm -f /var/run/lock/netatalk
+
 exec netatalk -d
