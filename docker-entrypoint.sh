@@ -42,4 +42,4 @@ else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
 fi;
 
-exec netatalk -d
+exec netatalk -F /etc/afp.conf -d

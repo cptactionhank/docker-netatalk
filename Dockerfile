@@ -1,7 +1,5 @@
-FROM debian:jessie
-ENV NETATALK_VERSION 3.1.11
-
-ENV DEPS="build-essential libevent-dev libssl-dev libgcrypt11-dev libkrb5-dev libpam0g-dev libwrap0-dev libdb-dev libtdb-dev libmysqlclient-dev libavahi-client-dev libacl1-dev libldap2-dev libcrack2-dev systemtap-sdt-dev libdbus-1-dev libdbus-glib-1-dev libglib2.0-dev libtracker-sparql-1.0-dev libtracker-miner-1.0-dev file"
+FROM debian:stretch-slim
+ENV DEPS="libwrap0 libcrack2 libavahi-client3 libevent-2.0-5 netbase python perl"
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
  && apt-get install \
@@ -9,40 +7,14 @@ RUN apt-get update \
         --fix-missing \
         --assume-yes \
         $DEPS \
-        tracker \
         avahi-daemon \
-        curl wget \
-        &&  wget      "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.gz" \
-        &&  curl -SL  "http://ufpr.dl.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.gz" | tar xvz
-
-WORKDIR netatalk-${NETATALK_VERSION}
-
-RUN ./configure \
-        --prefix=/usr \
-        --sysconfdir=/etc \
-        --with-init-style=debian-systemd \
-        --without-libevent \
-        --without-tdb \
-        --with-cracklib \
-        --enable-krbV-uam \
-        --with-pam-confdir=/etc/pam.d \
-        --with-dbus-sysconf-dir=/etc/dbus-1/system.d \
-        --with-tracker-pkgconfig-version=1.0 \
-        &&  make \
-         &&  make install \
-          &&  apt-get --quiet --yes purge --auto-remove \
-        $DEPS \
-        tracker-gui \
-        libgl1-mesa-dri \
-        &&  DEBIAN_FRONTEND=noninteractive apt-get install --yes \
-        libevent-2.0 \
-        libavahi-client3 \
-        libevent-core-2.0 \
-        libwrap0 \
-        libtdb1 \
-        libmysqlclient18 \
-        libcrack2 \
-        libdbus-glib-1-2 \
+        curl \
+        ca-certificates \
+        && NETATALK_VERSION="$(curl -Ls https://api.github.com/repos/dgilman/netatalk-debian/releases/latest | grep 'tag_name' | cut -d\" -f4)" \
+        && curl -Ls -o libatalk18_${NETATALK_VERSION}_amd64.deb "https://github.com/dgilman/netatalk-debian/releases/download/${NETATALK_VERSION}/stretch_libatalk18_${NETATALK_VERSION}_amd64.deb" \
+        && curl -Ls -o netatalk_${NETATALK_VERSION}_amd64.deb "https://github.com/dgilman/netatalk-debian/releases/download/${NETATALK_VERSION}/stretch_netatalk_${NETATALK_VERSION}_amd64.deb" \
+        && dpkg -i *.deb \
+        && rm *.deb \
         &&  apt-get --quiet --yes autoclean \
          &&  apt-get --quiet --yes autoremove \
           &&  apt-get --quiet --yes clean \
@@ -54,7 +26,8 @@ RUN ./configure \
                 &&  rm -rf /usr/share/mime \
                  &&  rm -rf /usr/share/GeoIP \
                   &&  rm -rf /var/lib/apt/lists* \
-                   &&  mkdir /media/share
+                   &&  rm -rf /var/log/* \
+                    &&  mkdir /media/share
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY afp.conf /etc/afp.conf
