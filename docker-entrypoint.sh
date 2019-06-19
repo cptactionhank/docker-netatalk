@@ -1,30 +1,24 @@
 #!/bin/bash
 
-if [ ! -z "${AFP_USER}" ]; then
-    if [ ! -z "${AFP_UID}" ]; then
-        cmd="$cmd --uid ${AFP_UID}"
-    fi
-    if [ ! -z "${AFP_GID}" ]; then
-        cmd="$cmd --gid ${AFP_GID}"
-        groupadd --gid ${AFP_GID} ${AFP_USER}
-    fi
-    adduser $cmd --no-create-home --disabled-password --gecos '' "${AFP_USER}"
-    if [ ! -z "${AFP_PASSWORD}" ]; then
-        echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
-    fi
-fi
+[ -d /media/share ] || mkdir /media/share
+[ -d /media/timemachine ] || mkdir /media/timemachine
 
-if [ ! -d /media/share ]; then
-  mkdir /media/share
-  echo "use -v /my/dir/to/share:/media/share" > readme.txt
-fi
-chown "${AFP_USER}" /media/share
+if [ "${AFP_USER}" ]; then
+  chown "${AFP_USER}" /media/share
+  chown "${AFP_USER}" /media/timemachine
 
-if [ ! -d /media/timemachine ]; then
-  mkdir /media/timemachine
-  echo "use -v /my/dir/to/timemachine:/media/timemachine" > readme.txt
+  if [ "${AFP_UID}" ]; then
+    cmd="--uid ${AFP_UID}"
+  fi
+  if [ "${AFP_GID}" ]; then
+    cmd="$cmd --gid ${AFP_GID}"
+    groupadd --gid ${AFP_GID} ${AFP_USER}
+  fi
+  adduser $cmd --no-create-home --disabled-password --gecos '' "${AFP_USER}"
+  if [ "${AFP_PASSWORD}" ]; then
+    echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
+  fi
 fi
-chown "${AFP_USER}" /media/timemachine
 
 sed -i'' -e "s,%USER%,${AFP_USER:-},g" /etc/afp.conf
 
@@ -42,4 +36,5 @@ else
     echo "Skipping avahi daemon, enable with env variable AVAHI=1"
 fi;
 
-exec netatalk -d
+exec netatalk -d -F /etc/afp.conf
+
