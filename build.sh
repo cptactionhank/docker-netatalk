@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 IMAGE_OWNER=dubodubonduponey
-IMAGE_NAME=system-netatalk
+IMAGE_NAME=netatalk
 IMAGE_VERSION=v1
 
 export DOCKER_CLI_EXPERIMENTAL=enabled
