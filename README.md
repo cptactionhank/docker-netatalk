@@ -8,7 +8,7 @@ Specifically useful as a Time Machine server.
 
 ```bash
 docker run \
-    --net=host
+    --net=host \
     --volume [host_path]:/media/home \
     --volume [host_path]:/media/share \
     --volume [host_path]:/media/timemachine \
