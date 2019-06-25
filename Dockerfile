@@ -17,9 +17,13 @@ COPY avahi-daemon.conf /etc/avahi/avahi-daemon.conf
 
 RUN chmod a+r /etc/afp.conf
 
+ENV USERS=""
+ENV PASSWORDS=""
+ENV UIDS=""
+ENV GID=""
 EXPOSE 548
-VOLUME "/etc/afp.conf"
-VOLUME "/etc/avahi/avahi-daemon.conf"
+#VOLUME "/etc/afp.conf"
+#VOLUME "/etc/avahi/avahi-daemon.conf"
 VOLUME "/media/home"
 VOLUME "/media/share"
 VOLUME "/media/timemachine"

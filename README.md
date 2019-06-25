@@ -15,8 +15,6 @@ docker run \
     --env NAME="My AFP Server" \
     --env USERS="$(id -un)" \
     --env PASSWORDS="secret" \
-    --env UIDS="$(id -u)" \
-    --env GIDS="$(id -g)" \
     dubodubonduponey/netatalk:v1
 ```
 
@@ -49,8 +47,7 @@ Need help with macvlan?
 
 ### Configuration
 
-You may specify as many users/passwords/uids/gids as you want (space separated).
-UIDs and GIDs are only useful if you expect file ownership to be set properly on the host.
+You may specify as many users/passwords as you want (space separated).
 
 Home directories are accessible only by the corresponding user.
 
@@ -58,7 +55,7 @@ Home directories are accessible only by the corresponding user.
 
 `timemachine` is accessible by everyone as well (hint: backups SHOULD then be encrypted).
 
-Guest access is also enabled for `share` (name `brigitte`).
+Guest access is also enabled for `share` (name `brigitte`) (XXX guest access does not work right now).
 
 If you want to tweak the `afp.conf` file, documentation is [here](http://netatalk.sourceforge.net/3.1/htmldocs/afp.conf.5.html).
 
