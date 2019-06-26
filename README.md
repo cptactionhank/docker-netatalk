@@ -10,7 +10,7 @@ Specifically useful as a Time Machine server.
 ## Run
 
 ```bash
-docker run \
+docker run -d \
     --net=host \
     --volume [host_path]:/media/home \
     --volume [host_path]:/media/share \
