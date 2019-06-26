@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-IMAGE_OWNER=dubodubonduponey
-IMAGE_NAME=netatalk
-IMAGE_VERSION=v1
+IMAGE_OWNER=${IMAGE_OWNER:-dubodubonduponey}
+IMAGE_NAME=${IMAGE_NAME:-netatalk}
+IMAGE_VERSION=${IMAGE_VERSION:-v1}
 
 export DOCKER_CLI_EXPERIMENTAL=enabled
 docker buildx create --name "$IMAGE_NAME"
