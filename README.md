@@ -2,6 +2,9 @@
 
 A docker image for [Apple Filing Protocol](https://en.wikipedia.org/wiki/Apple_Filing_Protocol) file sharing, Tracker (search/spotlight integration), and mDNS server for service discovery.
 
+ * multi-architecture (linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6)
+ * based on debian:buster-slim
+
 Specifically useful as a Time Machine server.
 
 ## Run
