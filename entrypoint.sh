@@ -16,6 +16,10 @@ helpers::avahi(){
   # https://linux.die.net/man/1/dbus-daemon-1
   dbus-daemon --system
 
+  until [ -e /var/run/dbus/system_bus_socket ]; do
+    sleep 1s
+  done
+
   # Set the hostname, if we have it
   sed -i'' -e "s,%AVAHI_NAME%,$AVAHI_NAME,g" /etc/avahi/avahi-daemon.conf
 
