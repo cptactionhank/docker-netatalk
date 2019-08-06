@@ -47,7 +47,7 @@ helpers::createUser(){
   adduser --home "$HOME_ROOT/$login" --disabled-password --ingroup afp-share --gecos '' "$login"
 
   if [ "$password" ]; then
-    printf "$login:$password" | chpasswd
+    printf "%s:%s" "$login" "$password" | chpasswd
   fi
 }
 
@@ -64,7 +64,9 @@ if [ ! -e ".first-run" ]; then
   [ -d "$SHARE_ROOT" ]       || mkdir "$SHARE_ROOT"
   [ -d "$TIMEMACHINE_ROOT" ] || mkdir "$TIMEMACHINE_ROOT"
 
+  # shellcheck disable=SC2206
   USERS=($USERS)
+  # shellcheck disable=SC2206
   PASSWORDS=($PASSWORDS)
 
   printf "Creating users\n"
