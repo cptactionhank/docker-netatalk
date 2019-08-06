@@ -3,7 +3,8 @@
 #######################
 FROM        debian:buster-slim
 
-MAINTAINER  dubo-dubon-duponey@jsboot.space
+LABEL       dockerfile.copyright="Dubo Dubon Duponey <dubo-dubon-duponey@jsboot.space>"
+
 # Install dependencies and tools
 ARG         DEBIAN_FRONTEND="noninteractive"
 ENV         TERM="xterm" LANG="C.UTF-8" LC_ALL="C.UTF-8"
