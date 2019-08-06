@@ -8,6 +8,8 @@ if ! shellcheck ./*.sh*; then
   echo "Failed shellchecking"
   exit 1
 fi
+
+docker version
 if ! NO_CACHE=true NO_PUSH=true ./build.sh; then
   echo "Failed building image"
   exit 1
