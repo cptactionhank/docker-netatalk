@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ! hadolint Dockerfile; then
+if ! hadolint ./*Dockerfile*; then
   echo "Failed linting on Dockerfile"
   exit 1
 fi
