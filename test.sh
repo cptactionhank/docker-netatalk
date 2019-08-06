@@ -9,7 +9,14 @@ if ! shellcheck ./*.sh*; then
   exit 1
 fi
 
-docker version
+dv="$(docker version | grep "^ Version")"
+dv="${dv#*:}"
+dv="${dv##* }"
+if [ "${dv%%.*}" != "19" ]; then
+  echo "Docker is too old and doesn't support buildx. Ignoring build test."
+  exit
+fi
+
 if ! NO_CACHE=true NO_PUSH=true ./build.sh; then
   echo "Failed building image"
   exit 1
