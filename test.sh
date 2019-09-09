@@ -10,7 +10,7 @@ if ! shellcheck ./*.sh*; then
   exit 1
 fi
 
-if ! NO_CACHE=true NO_PUSH=true ./build.sh; then
+if [ ! "$IGNORE_BUILD" ] && ! NO_CACHE=true NO_PUSH=true ./build.sh; then
   >&2 printf "Failed building image\n"
   exit 1
 fi
