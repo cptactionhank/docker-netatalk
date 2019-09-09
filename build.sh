@@ -25,8 +25,8 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 dv="$(docker version | grep "^ Version")"
 dv="${dv#*:}"
 dv="${dv##* }"
-if [ "${dv%%.*}" != "19" ]; then
-  echo "Docker is too old and doesn't support buildx. Failing!"
+if [ "${dv%%.*}" -lt "19" ]; then
+  >&2 printf "Docker is too old and doesn't support buildx. Failing!\n"
   exit 1
 fi
 
