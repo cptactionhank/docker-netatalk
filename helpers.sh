@@ -9,6 +9,9 @@ IMAGE_TAG="${IMAGE_TAG:-v1}"
 TITLE="${TITLE:-}"
 DESCRIPTION="${DESCRIPTION:-}"
 PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6}"
+DEBIAN_DATE=${DEBIAN_DATE:-2019-12-01}
+BUILDER_BASE=dubodubonduponey/base:builder-${DEBIAN_DATE}
+RUNTIME_BASE=dubodubonduponey/base:runtime-${DEBIAN_DATE}
 
 # Behavioral
 PUSH=
@@ -45,10 +48,14 @@ if [ "${dv%%.*}" -lt "19" ]; then
 fi
 
 # Build invocation
-docker buildx create --node "$VENDOR-${IMAGE_NAME}0" --name "$VENDOR-$IMAGE_NAME"
-docker buildx use "$VENDOR-$IMAGE_NAME"
+#docker buildx create --node "$VENDOR-${IMAGE_NAME}0" --name "$VENDOR-$IMAGE_NAME"
+#docker buildx use "$VENDOR-$IMAGE_NAME"
+docker buildx create --node "${VENDOR}0" --name "$VENDOR"
+docker buildx use "$VENDOR"
 
 docker buildx build --pull --platform "$PLATFORMS" \
+  --build-arg="BUILDER_BASE=$BUILDER_BASE" \
+  --build-arg="RUNTIME_BASE=$RUNTIME_BASE" \
   --build-arg="BUILD_CREATED=$DATE" \
   --build-arg="BUILD_URL=$URL" \
   --build-arg="BUILD_DOCUMENTATION=$DOCUMENTATION" \

@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
-########################################################################################################################
-# Common helpers
-########################################################################################################################
-# Err on anything
-# Note: bluetoothd might fail
-set -e
+set -o errexit -o errtrace -o functrace -o nounset -o pipefail
 
 helpers::dbus(){
   # On container restart, cleanup the crap

@@ -1,7 +1,10 @@
 #######################
 # Extra builder for healthchecker
 #######################
-FROM          --platform=$BUILDPLATFORM dubodubonduponey/base:builder                                                   AS builder-healthcheck
+ARG           BUILDER_BASE=dubodubonduponey/base:builder
+ARG           RUNTIME_BASE=dubodubonduponey/base:runtime
+# hadolint ignore=DL3006
+FROM          --platform=$BUILDPLATFORM $BUILDER_BASE                                                                   AS builder-healthcheck
 
 ARG           HEALTH_VER=51ebf8ca3d255e0c846307bf72740f731e6210c3
 
@@ -9,14 +12,13 @@ WORKDIR       $GOPATH/src/github.com/dubo-dubon-duponey/healthcheckers
 RUN           git clone git://github.com/dubo-dubon-duponey/healthcheckers .
 RUN           git checkout $HEALTH_VER
 RUN           arch="${TARGETPLATFORM#*/}"; \
-              env GOOS=linux GOARCH="${arch%/*}" go build -v -ldflags "-s -w" -o /dist/bin/http-health ./cmd/http
-
-RUN           chmod 555 /dist/bin/*
+              env GOOS=linux GOARCH="${arch%/*}" go build -v -ldflags "-s -w" -o /dist/boot/bin/http-health ./cmd/http
 
 #######################
 # Running image
 #######################
-FROM          dubodubonduponey/base:runtime
+# hadolint ignore=DL3006
+FROM          $RUNTIME_BASE
 
 # hadolint ignore=DL3002
 USER          root
@@ -50,6 +52,9 @@ RUN           dbus-uuidgen --ensure \
               && chmod g+srwx /media/share \
               && chmod g+srwx /media/timemachine \
 
+COPY          --from=builder-healthcheck /dist/boot/bin           /dist/boot/bin
+RUN           chmod 555 /dist/boot/bin/*
+
 VOLUME        /data
 VOLUME        /run
 EXPOSE        548
@@ -59,6 +64,12 @@ ENV           NAME="Farcloser Netatalk"
 ENV           USERS=""
 ENV           PASSWORDS=""
 
+ENV           NAME=TotaleCroquette
+
+ENV           HEALTHCHECK_URL=http://127.0.0.1:548
+
 VOLUME        /media/home
 VOLUME        /media/share
 VOLUME        /media/timemachine
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=1 CMD http-health || exit 1
