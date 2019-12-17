@@ -1,36 +1,75 @@
 #######################
-# Usual avahi/dbus image
+# Extra builder for healthchecker
 #######################
-FROM        debian:buster-slim
+ARG           BUILDER_BASE=dubodubonduponey/base:builder
+ARG           RUNTIME_BASE=dubodubonduponey/base:runtime
+# hadolint ignore=DL3006
+FROM          --platform=$BUILDPLATFORM $BUILDER_BASE                                                                   AS builder-healthcheck
 
-LABEL       dockerfile.copyright="Dubo Dubon Duponey <dubo-dubon-duponey@jsboot.space>"
+ARG           HEALTH_VER=51ebf8ca3d255e0c846307bf72740f731e6210c3
+
+WORKDIR       $GOPATH/src/github.com/dubo-dubon-duponey/healthcheckers
+RUN           git clone git://github.com/dubo-dubon-duponey/healthcheckers .
+RUN           git checkout $HEALTH_VER
+RUN           arch="${TARGETPLATFORM#*/}"; \
+              env GOOS=linux GOARCH="${arch%/*}" go build -v -ldflags "-s -w" -o /dist/boot/bin/http-health ./cmd/http
+
+#######################
+# Running image
+#######################
+# hadolint ignore=DL3006
+FROM          $RUNTIME_BASE
+
+# hadolint ignore=DL3002
+USER          root
 
 # Install dependencies and tools
-ARG         DEBIAN_FRONTEND="noninteractive"
-ENV         TERM="xterm" LANG="C.UTF-8" LC_ALL="C.UTF-8"
-RUN         apt-get update              > /dev/null && \
-            apt-get install -y --no-install-recommends dbus=1.12.16-1 avahi-daemon=0.7-4+b1 netatalk=3.1.12~ds-3 \
-                                        > /dev/null && \
-            apt-get -y autoremove       > /dev/null && \
-            apt-get -y clean            && \
-            rm -rf /var/lib/apt/lists/* && \
-            rm -rf /tmp/*               && \
-            rm -rf /var/tmp/*
+ARG           DEBIAN_FRONTEND="noninteractive"
+ENV           TERM="xterm" LANG="C.UTF-8" LC_ALL="C.UTF-8"
+RUN           apt-get update -qq && \
+              apt-get install -qq --no-install-recommends \
+                dbus=1.12.16-1 \
+                avahi-daemon=0.7-4+b1 \
+                netatalk=3.1.12~ds-3 && \
+              apt-get -qq autoremove      && \
+              apt-get -qq clean           && \
+              rm -rf /var/lib/apt/lists/* && \
+              rm -rf /tmp/*               && \
+              rm -rf /var/tmp/*
 
-WORKDIR     /dubo-dubon-duponey
-RUN         mkdir -p /var/run/dbus
-COPY        avahi-daemon.conf /etc/avahi/avahi-daemon.conf
-COPY        entrypoint.sh .
+RUN           dbus-uuidgen --ensure \
+              && mkdir -p /run/dbus \
+              && chown "$BUILD_UID":root /run/dbus \
+              && chmod 775 /run/dbus \
+              && groupadd afp-share \
+              && mkdir -p /media/home \
+              && mkdir -p /media/share \
+              && mkdir -p /media/timemachine \
+              && chown "$BUILD_UID":afp-share -p /media/home \
+              && chown "$BUILD_UID":afp-share -p /media/share \
+              && chown "$BUILD_UID":afp-share -p /media/timemachine \
+              && chmod g+srwx /media/home \
+              && chmod g+srwx /media/share \
+              && chmod g+srwx /media/timemachine \
 
-COPY        afp.conf /etc/afp.conf
-# XXX per-user connections require this?
-RUN         chmod a+r /etc/afp.conf
+COPY          --from=builder-healthcheck /dist/boot/bin           /dist/boot/bin
+RUN           chmod 555 /dist/boot/bin/*
 
-ENV         USERS=""
-ENV         PASSWORDS=""
-EXPOSE      548
-VOLUME      "/media/home"
-VOLUME      "/media/share"
-VOLUME      "/media/timemachine"
+VOLUME        /data
+VOLUME        /run
+EXPOSE        548
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENV           NAME="Farcloser Netatalk"
+
+ENV           USERS=""
+ENV           PASSWORDS=""
+
+ENV           NAME=TotaleCroquette
+
+ENV           HEALTHCHECK_URL=http://127.0.0.1:548
+
+VOLUME        /media/home
+VOLUME        /media/share
+VOLUME        /media/timemachine
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=1 CMD http-health || exit 1

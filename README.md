@@ -2,10 +2,31 @@
 
 A docker image for [Apple Filing Protocol](https://en.wikipedia.org/wiki/Apple_Filing_Protocol) file sharing, Tracker (search/spotlight integration), and mDNS server for service discovery.
 
- * multi-architecture (linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6)
- * based on debian:buster-slim
-
 Specifically useful as a Time Machine server.
+
+## Image features
+
+ * multi-architecture:
+    * [x] linux/amd64
+    * [x] linux/arm64
+    * [x] linux/arm/v7
+    * [x] linux/arm/v6
+ * hardened:
+    * [x] image runs read-only
+    * [x] image runs with no capabilities
+    * [ ] process runs as a non-root user, disabled login, no shell
+        * the entrypoint script still runs as root before dropping privileges (due to avahi-daemon)
+ * lightweight
+    * [x] based on our slim [Debian buster version](https://github.com/dubo-dubon-duponey/docker-debian)
+    * [x] simple entrypoint script
+    * [ ] multi-stage build with ~~no installed~~ dependencies for the runtime image:
+        * dbus
+        * avahi-daemon
+        * netatalk
+ * observable
+    * [x] healthcheck
+    * [x] log to stdout
+    * [ ] ~~prometheus endpoint~~ not applicable
 
 ## Run
 
