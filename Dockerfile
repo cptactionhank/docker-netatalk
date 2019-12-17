@@ -45,12 +45,12 @@ RUN           dbus-uuidgen --ensure \
               && mkdir -p /media/home \
               && mkdir -p /media/share \
               && mkdir -p /media/timemachine \
-              && chown "$BUILD_UID":afp-share -p /media/home \
-              && chown "$BUILD_UID":afp-share -p /media/share \
-              && chown "$BUILD_UID":afp-share -p /media/timemachine \
+              && chown "$BUILD_UID":afp-share /media/home \
+              && chown "$BUILD_UID":afp-share /media/share \
+              && chown "$BUILD_UID":afp-share /media/timemachine \
               && chmod g+srwx /media/home \
               && chmod g+srwx /media/share \
-              && chmod g+srwx /media/timemachine \
+              && chmod g+srwx /media/timemachine
 
 COPY          --from=builder-healthcheck /dist/boot/bin           /dist/boot/bin
 RUN           chmod 555 /dist/boot/bin/*
