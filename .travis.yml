@@ -19,4 +19,4 @@ matrix:
   include:
     - os: linux
       dist: bionic
-      env: IGNORE_BUILD=true
+      env: TEST_DOES_NOT_BUILD=true
