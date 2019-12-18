@@ -55,6 +55,8 @@ RUN           dbus-uuidgen --ensure \
 COPY          --from=builder-healthcheck /dist/boot/bin           /dist/boot/bin
 RUN           chmod 555 /dist/boot/bin/*
 
+
+VOLUME        /etc
 VOLUME        /data
 VOLUME        /run
 EXPOSE        548

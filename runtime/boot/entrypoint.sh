@@ -40,7 +40,7 @@ helpers::createUser(){
 }
 
 # On first run
-if [ ! -e ".first-run" ]; then
+if [ ! -e "/data/.first-run" ]; then
   # shellcheck disable=SC2206
   USERS=($USERS)
   # shellcheck disable=SC2206
@@ -54,7 +54,7 @@ if [ ! -e ".first-run" ]; then
   # Set config
   sed -i'' -e "s,%NAME%,$NAME,g" /data/afp.conf
 
-  touch .first-run
+  touch /data/.first-run
   printf "Done with first run, all set\n"
 fi
 
