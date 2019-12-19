@@ -40,7 +40,7 @@ helpers::createUser(){
 }
 
 # On first run
-if [ ! -e ".first-run" ]; then
+if [ ! -e "/data/.first-run" ]; then
   # shellcheck disable=SC2206
   USERS=($USERS)
   # shellcheck disable=SC2206
@@ -54,7 +54,7 @@ if [ ! -e ".first-run" ]; then
   # Set config
   sed -i'' -e "s,%NAME%,$NAME,g" /data/afp.conf
 
-  touch .first-run
+  touch /data/.first-run
   printf "Done with first run, all set\n"
 fi
 
@@ -62,5 +62,7 @@ fi
 helpers::dbus
 helpers::avahi
 
-# XXX not likely to work?
-exec chroot --userspec=dubo-dubon-duponey / netatalk -d -F /data/afp.conf "$@"
+rm -f /run/lock/netatalk
+netatalk -d -F /data/afp.conf "$@"
+# XXX not likely to work without root...
+# exec chroot --userspec=dubo-dubon-duponey / netatalk -d -F /data/afp.conf "$@"
