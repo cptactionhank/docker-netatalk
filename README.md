@@ -19,6 +19,7 @@ Specifically useful as a Time Machine server.
         * FOWNER
         * SETUID
         * SETGID
+        * DAC_OVERRIDE
     * [ ] process runs as a non-root user, disabled login, no shell
         * the entrypoint script still runs as root before dropping privileges (due to avahi-daemon)
  * lightweight
@@ -51,6 +52,7 @@ docker run -d --rm \
     --cap-add FOWNER \
     --cap-add SETUID \
     --cap-add SETGID \
+    --cap-add DAC_OVERRIDE \
     --read-only \
     dubodubonduponey/netatalk:v1
 ```
