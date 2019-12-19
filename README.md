@@ -90,3 +90,7 @@ Would you need to, you may optionally pass along:
  * `--volume [host_path]/avahi-daemon.conf:/etc/avahi/avahi-daemon.conf`
 
 Also, any additional arguments when running the image will get fed to the `netatalk` binary.
+
+## Moar?
+
+See [DEVELOP.md](DEVELOP.md)
