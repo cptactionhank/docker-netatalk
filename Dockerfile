@@ -52,8 +52,9 @@ RUN           dbus-uuidgen --ensure \
               && chmod g+srwx /media/share \
               && chmod g+srwx /media/timemachine
 
-COPY          --from=builder-healthcheck /dist/boot/bin           /dist/boot/bin
-RUN           chmod 555 /dist/boot/bin/*
+# XXX disable healthchecker for now
+# COPY          --from=builder-healthcheck /dist/boot/bin           /dist/boot/bin
+# RUN           chmod 555 /dist/boot/bin/*
 
 
 VOLUME        /etc
@@ -69,10 +70,10 @@ ENV           PASSWORDS=""
 
 ENV           NAME=TotaleCroquette
 
-ENV           HEALTHCHECK_URL=http://127.0.0.1:548
+# ENV           HEALTHCHECK_URL=http://127.0.0.1:548
 
 VOLUME        /media/home
 VOLUME        /media/share
 VOLUME        /media/timemachine
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=1 CMD http-health || exit 1
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=1 CMD http-health || exit 1

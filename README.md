@@ -29,7 +29,7 @@ Specifically useful as a Time Machine server.
         * avahi-daemon
         * netatalk
  * observable
-    * [x] healthcheck
+    * [ ] ~~healthcheck~~
     * [x] log to stdout
     * [ ] ~~prometheus endpoint~~ not applicable
 
