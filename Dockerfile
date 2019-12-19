@@ -57,6 +57,7 @@ RUN           chmod 555 /dist/boot/bin/*
 
 
 VOLUME        /etc
+VOLUME        /var/log
 VOLUME        /data
 VOLUME        /run
 EXPOSE        548

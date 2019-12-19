@@ -13,7 +13,12 @@ Specifically useful as a Time Machine server.
     * [x] linux/arm/v6
  * hardened:
     * [x] image runs read-only
-    * [x] image runs with no capabilities
+    * [ ] image runs with the following capabilities:
+        * NET_BIND_SERVICE
+        * CHOWN
+        * FOWNER
+        * SETUID
+        * SETGID
     * [ ] process runs as a non-root user, disabled login, no shell
         * the entrypoint script still runs as root before dropping privileges (due to avahi-daemon)
  * lightweight
@@ -31,41 +36,30 @@ Specifically useful as a Time Machine server.
 ## Run
 
 ```bash
-docker run -d \
-    --net=host \
+docker run -d --rm \
+    --name "netatalk" \
+    --env "NAME=Super Name For Your AFP Server" \
+    --env USERS="$(id -un) someone" \
+    --env PASSWORDS="secret alsosecret" \
     --volume [host_path]:/media/home \
     --volume [host_path]:/media/share \
     --volume [host_path]:/media/timemachine \
-    --env NAME="My AFP server name" \
-    --env USERS="$(id -un) someone" \
-    --env PASSWORDS="secret alsosecret" \
+    --net host \
+    --cap-drop ALL \
+    --cap-add NET_BIND_SERVICE \
+    --cap-add CHOWN \
+    --cap-add FOWNER \
+    --cap-add SETUID \
+    --cap-add SETGID \
+    --read-only \
     dubodubonduponey/netatalk:v1
 ```
 
 ## Notes
 
-### Network
+### Networking
 
- * `bridge` mode will NOT work for discovery, since mDNS will not broadcast on your lan subnet (you may still access the server explicitely on port 548)
- * `host` (default, easy choice) is only acceptable as long as you DO NOT have any other containers running on the same ip using avahi
-
-If you intend on running multiple containers relying on avahi, you may want to consider `macvlan`.
-
-TL;DR:
-
-```bash
-docker network create -d macvlan \
-  --subnet=192.168.1.0/24 \
-  --ip-range=192.168.1.128/25 \
-  --gateway=192.168.1.1 \
-  -o parent=eth0 hackvlan
-  
-docker run -d --env NAME=N1 --env USERS="$(id -un)" --env PASSWORDS="secret" --name=N1 --network=hackvlan dubodubonduponey/netatalk:v1
-docker run -d --env NAME=N2 --env USERS="$(id -un)" --env PASSWORDS="secret" --name=N2 --network=hackvlan dubodubonduponey/netatalk:v1
-```
-
-Need help with macvlan?
-[Hit yourself up](https://docs.docker.com/network/macvlan/).
+You need to run this in `host` or `mac(or ip)vlan` networking (because of mDNS).
 
 ### Configuration
 

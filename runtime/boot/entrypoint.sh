@@ -62,5 +62,7 @@ fi
 helpers::dbus
 helpers::avahi
 
-# XXX not likely to work?
-exec chroot --userspec=dubo-dubon-duponey / netatalk -d -F /data/afp.conf "$@"
+rm -f /run/lock/netatalk
+netatalk -d -F /data/afp.conf "$@"
+# XXX not likely to work without root...
+# exec chroot --userspec=dubo-dubon-duponey / netatalk -d -F /data/afp.conf "$@"
