@@ -24,7 +24,7 @@ You can find out more here:
  * https://github.com/dubo-dubon-duponey/docker-debian for the debootstrapped Debian base
  * https://github.com/dubo-dubon-duponey/docker-base for the builder and runtime images
 
-These images provide very little - they are (mostly) barebone Buster with metadata and some ONBUILD
+These images provide very little - they are (mostly) barebone Buster with some ONBUILD
 Docker syntactic sugar (metadata, user creation, entrypoint).
 
 Let me repeat: you have very little reason to go and add anything up there.
@@ -76,6 +76,14 @@ Hack away.
 
 Be sure to run `./test.sh` before submitting anything.
 
+### About branches
+
+`1` is the currently stable version that published images are based on.
+
+`master` contains (usually stable) changes likely to land in a release soon.
+
+`work` is a development branch, with possibly unstable / dramatic changes.
+
 ### Philosophy
 
  * keep it simple
@@ -96,9 +104,9 @@ Be sure to run `./test.sh` before submitting anything.
     * configuration goes to:
         * `/config` (read-only)
     * certificates go to:
-        * `/certs` (read-write)
+        * `/certs` (either read-only or read-write)
     * persistent application data goes to:
-        * `/data` (read-write)
+        * `/data` (usually read-write)
     * volatile data go to:
-        * `/tmp` (read-write)
+        * `/tmp` (usually read-write)
  * only use chroot if you really REALLY need root first
