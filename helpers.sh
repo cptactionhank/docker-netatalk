@@ -9,7 +9,7 @@ IMAGE_TAG="${IMAGE_TAG:-v1}"
 TITLE="${TITLE:-}"
 DESCRIPTION="${DESCRIPTION:-}"
 PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6}"
-DEBIAN_DATE=${DEBIAN_DATE:-2019-12-01}
+DEBIAN_DATE=${DEBIAN_DATE:-2020-01-01}
 BUILDER_BASE=dubodubonduponey/base:builder-${DEBIAN_DATE}
 RUNTIME_BASE=dubodubonduponey/base:runtime-${DEBIAN_DATE}
 
