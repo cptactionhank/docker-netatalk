@@ -4,7 +4,7 @@ set -o errexit -o errtrace -o functrace -o nounset -o pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]:-$PWD}")" 2>/dev/null 1>&2 && pwd)"
 
 # Settings defaults
-REGISTRY="${REGISTRY:-registry-1.docker.io}"
+REGISTRY="${REGISTRY:-index.docker.io}"
 VENDOR="${VENDOR:-dubodubonduponey}"
 IMAGE_NAME="${IMAGE_NAME:-untitled}"
 IMAGE_TAG="${IMAGE_TAG:-v1}"
@@ -57,6 +57,7 @@ fi
 docker buildx create --node "${VENDOR}0" --name "$VENDOR" > /dev/null
 docker buildx use "$VENDOR"
 
+# shellcheck disable=SC2086
 docker buildx build --pull --platform "$PLATFORMS" --build-arg="FAIL_WHEN_OUTDATED=${FAIL_WHEN_OUTDATED:-}" \
   --build-arg="BUILDER_BASE=$BUILDER_BASE" \
   --build-arg="RUNTIME_BASE=$RUNTIME_BASE" \
@@ -74,7 +75,7 @@ docker buildx build --pull --platform "$PLATFORMS" --build-arg="FAIL_WHEN_OUTDAT
   --build-arg="http_proxy=$PROXY" \
   --build-arg="https_proxy=$PROXY" \
   --file "$DOCKERFILE" \
-  --tag "$REGISTRY/$VENDOR/$IMAGE_NAME:$IMAGE_TAG" ${CACHE} "${PUSH}" "$@" "$root"
+  --tag "$REGISTRY/$VENDOR/$IMAGE_NAME:$IMAGE_TAG" ${CACHE} ${PUSH} "$@" "$root"
 
 build::getsha(){
   local image_name="$1"

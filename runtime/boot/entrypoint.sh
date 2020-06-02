@@ -32,6 +32,7 @@ helpers::avahi(){
 helpers::createUser(){
   local login="$1"
   local password="$2"
+  # XXX this will fail if the directory already exist
   adduser --home "/media/home/$login" --disabled-password --ingroup afp-share --gecos '' "$login"
 
   if [ "$password" ]; then
@@ -39,6 +40,8 @@ helpers::createUser(){
   fi
 }
 
+# XXX this is tricky and counter-intuitive (as passwords are not changed when the env vars are changed)- getting rid of the first run mechanism may be a good idea
+# Also, data being preserved in volumes, repeating this will fail in very confusing ways
 # On first run
 if [ ! -e "/data/.first-run" ]; then
   # shellcheck disable=SC2206
