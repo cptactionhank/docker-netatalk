@@ -98,15 +98,15 @@ Be sure to run `./test.sh` before submitting anything.
     * no root
     * no write
     * no cap
- * use existing infrastructure
+ * use the provided infrastructure
     * runnable artifacts go to:
         * `/boot/bin` (read-only)
-    * configuration goes to:
+    * configuration should be read from:
         * `/config` (read-only)
-    * certificates go to:
+    * certificates should go to:
         * `/certs` (either read-only or read-write)
-    * persistent application data goes to:
+    * persistent application data should use:
         * `/data` (usually read-write)
-    * volatile data go to:
+    * volatile data should use:
         * `/tmp` (usually read-write)
- * only use chroot if you really REALLY need root first
+ * only use chroot to downgrade if you really REALLY need to start your entrypoint with "root"

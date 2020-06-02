@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o errtrace -o functrace -o nounset -o pipefail
 
+export DEBIAN_DATE=2020-06-01
 export TITLE="Netatalk"
 export DESCRIPTION="A dubo image for Netatalk"
 export IMAGE_NAME="netatalk"
