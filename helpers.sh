@@ -12,12 +12,14 @@ TITLE="${TITLE:-}"
 DESCRIPTION="${DESCRIPTION:-}"
 PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6}"
 DEBIAN_DATE=${DEBIAN_DATE:-2020-01-01}
-DOCKERFILE="$root/${DOCKERFILE:-Dockerfile}"
+DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 BUILDER_BASE="${BUILDER_BASE:-dubodubonduponey/base:builder-${DEBIAN_DATE}}"
 RUNTIME_BASE="${RUNTIME_BASE:-dubodubonduponey/base:runtime-${DEBIAN_DATE}}"
+CONTEXT="${CONTEXT:-.}"
 
 # Behavioral
-PROXY="${PROXY:-}"
+APTPROXY="${APTPROXY:-}"
+GOPROXY="${GOPROXY:-}"
 PUSH=--push
 CACHE=
 NO_PUSH="${NO_PUSH:-}"
@@ -72,10 +74,11 @@ docker buildx build --pull --platform "$PLATFORMS" --build-arg="FAIL_WHEN_OUTDAT
   --build-arg="BUILD_REF_NAME=$REGISTRY/$VENDOR/$IMAGE_NAME:$IMAGE_TAG" \
   --build-arg="BUILD_TITLE=$TITLE" \
   --build-arg="BUILD_DESCRIPTION=$DESCRIPTION" \
-  --build-arg="http_proxy=$PROXY" \
-  --build-arg="https_proxy=$PROXY" \
-  --file "$DOCKERFILE" \
-  --tag "$REGISTRY/$VENDOR/$IMAGE_NAME:$IMAGE_TAG" ${CACHE} ${PUSH} "$@" "$root"
+  --build-arg="APTPROXY=$APTPROXY" \
+  --build-arg="GOPROXY=$GOPROXY" \
+  --build-arg="GO111MODULE=${GO111MODULE:-on}" \
+  --file "$root/$DOCKERFILE" \
+  --tag "$REGISTRY/$VENDOR/$IMAGE_NAME:$IMAGE_TAG" ${CACHE} ${PUSH} "$@" "$root/$CONTEXT"
 
 build::getsha(){
   local image_name="$1"
@@ -88,7 +91,7 @@ build::getsha(){
   owner=${owner##*/}
   token=$(curl https://auth.docker.io/token?service=registry.docker.io\&scope=repository%3A"${owner}"%2F"${short_name}"%3Apull  -v -L -s -H 'Authorization: ' 2>/dev/null | grep '^{' | jq -rc .token)
   digest=$(curl https://registry-1.docker.io/v2/"${owner}"/"${short_name}"/manifests/"${image_tag}" -L -s -I -H "Authorization: Bearer ${token}" -H "Accept: application/vnd.docker.distribution.manifest.v2+json"  -H "Accept: application/vnd.docker.distribution.manifest.list.v2+json" | grep Docker-Content-Digest)
-  printf "%s\n" "${digest#*: }"
+  printf "%s" "${digest#*: }" | tr -d $'\r'
 }
 
 if [ "$REGISTRY" == "registry-1.docker.io" ]; then
