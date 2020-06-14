@@ -42,14 +42,14 @@ VENDOR="dubodubonduponey"
 IMAGE_NAME="super_image"
 
 # Tag name to publish
-IMAGE_TAG="v1"
+IMAGE_TAG="latest"
 
 # Image metadata (applied through labels)
 TITLE="My super image title"
 DESCRIPTION="My super image description"
 
 # Platforms you want to target (note: certain platforms may be unavailable for the underlying software)
-PLATFORMS="linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6}"
+PLATFORMS="linux/amd64,linux/arm64,linux/arm/v7"
 
 # Base debian image date to use (from our own base images)
 DEBIAN_DATE=2020-01-01

@@ -10,12 +10,13 @@ IMAGE_NAME="${IMAGE_NAME:-untitled}"
 IMAGE_TAG="${IMAGE_TAG:-v1}"
 TITLE="${TITLE:-}"
 DESCRIPTION="${DESCRIPTION:-}"
-PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6}"
+PLATFORMS="${PLATFORMS:-linux/amd64,linux/arm64,linux/arm/v7}"
 DEBIAN_DATE=${DEBIAN_DATE:-2020-01-01}
 DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 BUILDER_BASE="${BUILDER_BASE:-dubodubonduponey/base:builder-${DEBIAN_DATE}}"
 RUNTIME_BASE="${RUNTIME_BASE:-dubodubonduponey/base:runtime-${DEBIAN_DATE}}"
 CONTEXT="${CONTEXT:-.}"
+BUILDX="${BUILDX:-}"
 
 # Behavioral
 APTPROXY="${APTPROXY:-}"
@@ -54,10 +55,12 @@ if [ "${dv%%.*}" -lt "19" ]; then
 fi
 
 # Build invocation
-#docker buildx create --node "$VENDOR-${IMAGE_NAME}0" --name "$VENDOR-$IMAGE_NAME"
-#docker buildx use "$VENDOR-$IMAGE_NAME"
-docker buildx create --node "${VENDOR}0" --name "$VENDOR" > /dev/null
-docker buildx use "$VENDOR"
+if [ ! "$BUILDX" ]; then
+  if [ ! "$BUILDX" ]; then
+  docker buildx create --node "${VENDOR}0" --name "$VENDOR" > /dev/null
+  docker buildx use "$VENDOR"
+fi
+fi
 
 # shellcheck disable=SC2086
 docker buildx build --pull --platform "$PLATFORMS" --build-arg="FAIL_WHEN_OUTDATED=${FAIL_WHEN_OUTDATED:-}" \
