@@ -54,7 +54,7 @@ docker run -d --rm \
     --cap-add SETGID \
     --cap-add DAC_OVERRIDE \
     --read-only \
-    dubodubonduponey/netatalk:v1
+    dubodubonduponey/netatalk
 ```
 
 ## Notes
