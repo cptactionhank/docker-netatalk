@@ -13,7 +13,7 @@ if ! shellcheck ./*.sh*; then
   exit 1
 fi
 
-if [ ! "$TEST_DOES_NOT_BUILD" ] && ! NO_CACHE=true NO_PUSH=true ./build.sh; then
-  >&2 printf "Failed building image\n"
-  exit 1
+if [ ! "$TEST_DOES_NOT_BUILD" ] && ! ./build.sh --progress plain; then
+   >&2 printf "Failed building image\n"
+   exit 1
 fi
