@@ -128,9 +128,6 @@ export VERSION
 export REVISION
 export URL
 
-# Docker settings
-export DOCKER_CONTENT_TRUST=1
-
 PWD="$root" \
   docker buildx bake \
     -f "$root"/docker-bake.hcl \

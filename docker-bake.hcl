@@ -91,11 +91,6 @@ variable "GO111MODULE" {
   default = "on"
 }
 
-# Whether to fail the build if one of the runtime is outdated
-variable "FAIL_WHEN_OUTDATED" {
-  default = ""
-}
-
 # Just a hack to workaround buildkit path funkyness
 variable "PWD" {
   default = ""
@@ -112,7 +107,6 @@ target "shared" {
     APTPROXY = "${APTPROXY}"
     GOPROXY = "${GOPROXY}"
     GO111MODULE = "${GO111MODULE}"
-    FAIL_WHEN_OUTDATED = "${FAIL_WHEN_OUTDATED}"
 
     BUILDER_BASE = "${equal(BUILDER_BASE,"") ? "${REGISTRY}/dubodubonduponey/base:builder-${DEBIAN_SUITE}-${DEBIAN_DATE}" : "${BUILDER_BASE}"}"
     RUNTIME_BASE = "${equal(RUNTIME_BASE,"") ? "${REGISTRY}/dubodubonduponey/base:runtime-${DEBIAN_SUITE}-${DEBIAN_DATE}" : "${RUNTIME_BASE}"}"
