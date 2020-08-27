@@ -2,11 +2,11 @@ variable "IMAGE_NAME" {
   default = "untitled"
 }
 
-variable "DEBIAN_DATE" {
+variable "DEBOOTSTRAP_DATE" {
   default = "2020-01-01"
 }
 
-variable "DEBIAN_SUITE" {
+variable "DEBOOTSTRAP_SUITE" {
   default = "buster"
 }
 
@@ -76,8 +76,16 @@ variable "LICENSE" {
 # Behavioral
 #########################
 
-# Do we have an aptproxy?
-variable "APTPROXY" {
+# Apt related settings
+variable "APT_OPTIONS" {
+  default = "Acquire::HTTP::User-Agent=DuboDubonDuponey/0.1 Acquire::Check-Valid-Until=no"
+}
+
+variable "APT_SOURCES" {
+  default = ""
+}
+
+variable "APT_TRUSTED" {
   default = ""
 }
 
@@ -91,25 +99,41 @@ variable "GO111MODULE" {
   default = "on"
 }
 
-# Just a hack to workaround buildkit path funkyness
-variable "PWD" {
+# Do we have http and https proxies for other operations?
+variable "http_proxy" {
   default = ""
 }
 
+variable "https_proxy" {
+  default = ""
+}
+
+# Just a hack to workaround buildkit path funkyness
+variable "PWD" {
+  default = "."
+}
+
+# Toggle on content trust by default
 variable "DOCKER_CONTENT_TRUST" {
   default = "1"
 }
 
 target "shared" {
   dockerfile = "${PWD}/Dockerfile"
-  context = "${PWD}"
+  context = "${PWD}/context"
   args = {
-    APTPROXY = "${APTPROXY}"
+    APT_OPTIONS = "${APT_OPTIONS}"
+    APT_SOURCES = "${APT_SOURCES}"
+    APT_TRUSTED = "${APT_TRUSTED}"
+
+    http_proxy = "${http_proxy}"
+    https_proxy = "${https_proxy}"
+
     GOPROXY = "${GOPROXY}"
     GO111MODULE = "${GO111MODULE}"
 
-    BUILDER_BASE = "${equal(BUILDER_BASE,"") ? "${REGISTRY}/dubodubonduponey/base:builder-${DEBIAN_SUITE}-${DEBIAN_DATE}" : "${BUILDER_BASE}"}"
-    RUNTIME_BASE = "${equal(RUNTIME_BASE,"") ? "${REGISTRY}/dubodubonduponey/base:runtime-${DEBIAN_SUITE}-${DEBIAN_DATE}" : "${RUNTIME_BASE}"}"
+    BUILDER_BASE = "${equal(BUILDER_BASE,"") ? "${REGISTRY}/dubodubonduponey/base:builder-${DEBOOTSTRAP_SUITE}-${DEBOOTSTRAP_DATE}" : "${BUILDER_BASE}"}"
+    RUNTIME_BASE = "${equal(RUNTIME_BASE,"") ? "${REGISTRY}/dubodubonduponey/base:runtime-${DEBOOTSTRAP_SUITE}-${DEBOOTSTRAP_DATE}" : "${RUNTIME_BASE}"}"
 
     BUILD_TITLE = "${TITLE}"
     BUILD_DESCRIPTION = "${DESCRIPTION}"

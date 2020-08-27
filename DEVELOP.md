@@ -13,11 +13,11 @@ IMAGE_TAG=sometag
 
 ### The what
 
-This image is built using `dubodubonduponey/base:builder-$DEBIAN_DATE` and its runtime uses `dubodubonduponey/base:runtime-$DEBIAN_DATE`.
+This image is built using `dubodubonduponey/base:builder-$DEBOOTSTRAP_DATE` and its runtime uses `dubodubonduponey/base:runtime-$DEBOOTSTRAP_DATE`.
 
-Both these images are built upon `dubodubonduponey/debian:$DEBIAN_DATE`, a debootstrapped version of Debian Buster, built from a Debian snapshot at `$DEBIAN_DATE`.
+Both these images are built upon `dubodubonduponey/debian:$DEBOOTSTRAP_DATE`, a debootstrapped version of Debian Buster, built from a Debian snapshot at `$DEBOOTSTRAP_DATE`.
 
-At the time of this writing, `DEBIAN_DATE` evaluates to `2020-01-01`, and is updated every 15 days.
+At the time of this writing, `DEBOOTSTRAP_DATE` evaluates to `2020-01-01`, and is updated every 15 days.
 
 You can find out more here:
 
@@ -52,7 +52,7 @@ DESCRIPTION="My super image description"
 PLATFORMS="linux/amd64,linux/arm64,linux/arm/v7"
 
 # Base debian image date to use (from our own base images)
-DEBIAN_DATE=2020-01-01
+DEBOOTSTRAP_DATE=2020-01-01
 
 # Controls which user-id to assign to the in-container user
 BUILD_UID=2000

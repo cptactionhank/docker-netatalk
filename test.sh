@@ -8,7 +8,7 @@ if ! hadolint ./*Dockerfile*; then
   exit 1
 fi
 
-if ! shellcheck ./*.sh*; then
+if ! shellcheck ./*.sh; then
   >&2 printf "Failed shellchecking\n"
   exit 1
 fi

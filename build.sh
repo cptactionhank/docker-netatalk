@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o errtrace -o functrace -o nounset -o pipefail
 
-export DEBIAN_DATE="${DEBIAN_DATE:-2020-06-01}"
+export DEBOOTSTRAP_DATE="${DEBOOTSTRAP_DATE:-2020-08-01}"
 
 # For good info on qemu / multi-arch and buildx:
 # https://medium.com/@artur.klauser/building-multi-architecture-docker-images-with-buildx-27d80f7e2408
@@ -114,7 +114,11 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]:-$PWD}")" 2>/dev/null 1>&2 && pwd)"
 LICENSE="$(head -n 1 "$root/LICENSE")"
 # https://tools.ietf.org/html/rfc3339
 # XXX it doesn't seem like BSD date can format the timezone appropriately according to RFC3339 - eg: %:z doesn't work and %z misses the colon, so the gymnastic here
-DATE="$(date +%Y-%m-%dT%T%z | sed -E 's/([0-9]{2})([0-9]{2})$/\1:\2/')"
+# This is date now
+#DATE="$(date +%Y-%m-%dT%T%z | sed -E 's/([0-9]{2})([0-9]{2})$/\1:\2/')"
+# This is last commit date - a much better date actually...
+DATE="$(date -r "$(git -C "$root" log -1 --format="%at")" +%Y-%m-%dT%T%z 2>/dev/null || date --date="@$(git -C "$root" log -1 --format="%at")" +%Y-%m-%dT%T%z | sed -E 's/([0-9]{2})([0-9]{2})$/\1:\2/')"
+
 VERSION="$(git -C "$root" describe --match 'v[0-9]*' --dirty='.m' --always)"
 REVISION="$(git -C "$root" rev-parse HEAD)$(if ! git -C "$root" diff --no-ext-diff --quiet --exit-code; then printf ".m\\n"; fi)"
 # XXX this is dirty, resolve ssh aliasing to github by default

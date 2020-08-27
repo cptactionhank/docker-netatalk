@@ -38,6 +38,6 @@ matrix:
     - os: linux
       dist: bionic
       env:
-        - DEBIAN_SUITE=buster
-        - DEBIAN_DATE=2020-07-01
+        - DEBOOTSTRAP_SUITE=buster
+        - DEBOOTSTRAP_DATE=2020-08-01
         - TEST_DOES_NOT_BUILD=

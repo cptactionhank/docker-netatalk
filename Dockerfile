@@ -13,8 +13,8 @@ ARG           GIT_VERSION=51ebf8ca3d255e0c846307bf72740f731e6210c3
 WORKDIR       $GOPATH/src/$GIT_REPO
 RUN           git clone git://$GIT_REPO .
 RUN           git checkout $GIT_VERSION
-RUN           arch="${TARGETPLATFORM#*/}"; \
-              env GOOS=linux GOARCH="${arch%/*}" go build -v -ldflags "-s -w" \
+# hadolint ignore=DL4006
+RUN           env GOOS=linux GOARCH="$(printf "%s" "$TARGETPLATFORM" | sed -E 's/^[^/]+\/([^/]+).*/\1/')" go build -v -ldflags "-s -w" \
                 -o /dist/boot/bin/http-health ./cmd/http
 
 #######################
@@ -27,7 +27,6 @@ FROM          $RUNTIME_BASE
 USER          root
 
 # Install dependencies and tools
-ARG           DEBIAN_FRONTEND="noninteractive"
 RUN           apt-get update -qq && \
               apt-get install -qq --no-install-recommends \
                 dbus=1.12.16-1 \
