@@ -1,0 +1,51 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  DEBOOTSTRAP_SUITE: buster
+  DEBOOTSTRAP_DATE: 2020-08-01
+  APT_OPTIONS: "Acquire::HTTP::proxy=http://localhost:3142"
+
+jobs:
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checks-out repository
+        uses: actions/checkout@v2
+
+      - name: Enable cache
+        uses: actions/cache@v2.1.1
+        with:
+          path: $GITHUB_WORKSPACE/cache
+          key: cache
+
+      - name: Install hadolint
+        run: |
+          curl -sL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-$(uname -s)-$(uname -m)"
+          chmod 700 ./hadolint
+
+      - name: Start apt proxy
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/cache/apt"
+          chmod a+rwx "$GITHUB_WORKSPACE/cache/apt"
+          docker run -d --read-only --cap-drop=ALL --volume $GITHUB_WORKSPACE/cache/apt:/data --expose 3142 dubodubonduponey/aptutil
+
+      - name: Install multi-arch buildx environment
+        run: |
+          # Install buildx from our container
+          docker run --name installbuildx dubodubonduponey/utils /dist/buildx version
+          mkdir -p ~/.docker/cli-plugins
+          docker cp installbuildx:/dist/buildx ~/.docker/cli-plugins/docker-buildx
+          docker rm -f installbuildx
+          # Enable multi-arch building
+          docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+
+      - name: test
+        run: |
+          PATH=$PATH:$(pwd)
+          cd "$GITHUB_WORKSPACE"
+          ./test.sh
