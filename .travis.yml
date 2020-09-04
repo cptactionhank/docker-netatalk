@@ -27,7 +27,7 @@ before_install:
   - docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
 
 install:
-  - curl -sL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v1.16.0/hadolint-$(uname -s)-$(uname -m)"
+  - curl -sL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-$(uname -s)-$(uname -m)"
     && chmod 700 ./hadolint
 
 script:
@@ -36,8 +36,4 @@ script:
 matrix:
   include:
     - os: linux
-      dist: bionic
-      env:
-        - DEBOOTSTRAP_SUITE=buster
-        - DEBOOTSTRAP_DATE=2020-08-01
-        - TEST_DOES_NOT_BUILD=
+      dist: focal

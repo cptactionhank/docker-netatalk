@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o errtrace -o functrace -o nounset -o pipefail
 
-export DEBOOTSTRAP_DATE="${DEBOOTSTRAP_DATE:-2020-08-01}"
+export DEBOOTSTRAP_DATE="${DEBOOTSTRAP_DATE:-2020-09-01}"
 
 # For good info on qemu / multi-arch and buildx:
 # https://medium.com/@artur.klauser/building-multi-architecture-docker-images-with-buildx-27d80f7e2408

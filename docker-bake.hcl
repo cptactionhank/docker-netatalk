@@ -156,10 +156,11 @@ target "shared" {
     "linux/amd64",
     "linux/arm64",
     "linux/arm/v7",
-    "linux/arm/v6",
+    "linux/s390x",
+    "linux/ppc64le",
   ]
   cache-to = [
-    "type=local,dest=${PWD}/cache/buildkit"
+    "type=local,dest=${PWD}/cache/buildkit,mode=max"
   ]
   cache-from = [
     "type=local,src=${PWD}/cache/buildkit"

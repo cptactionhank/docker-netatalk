@@ -2,10 +2,6 @@ name: CI
 
 on: [push, pull_request]
 
-env:
-  DEBOOTSTRAP_SUITE: buster
-  DEBOOTSTRAP_DATE: 2020-08-01
-
 jobs:
   test:
     # The type of runner that the job will run on
@@ -15,6 +11,8 @@ jobs:
     steps:
       - name: Checks-out repository
         uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Enable cache
         uses: actions/cache@v2.1.1
@@ -31,7 +29,7 @@ jobs:
         run: |
           mkdir -p "$GITHUB_WORKSPACE/cache/apt"
           chmod a+rwx "$GITHUB_WORKSPACE/cache/apt"
-          docker run -d --name aptcache --read-only --cap-drop=ALL --volume $GITHUB_WORKSPACE/cache/apt:/data --expose 3142 dubodubonduponey/aptutil
+          docker run -d --name aptcache --read-only --cap-drop=ALL --volume $GITHUB_WORKSPACE/cache/apt:/data --expose 3142 dubodubonduponey/aptutil:buster-2020-08-01
 
       - name: Install multi-arch buildx environment
         run: |
