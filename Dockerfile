@@ -29,7 +29,7 @@ USER          root
 # Install dependencies and tools
 RUN           apt-get update -qq && \
               apt-get install -qq --no-install-recommends \
-                dbus=1.12.16-1 \
+                dbus=1.12.20-0+deb10u1 \
                 avahi-daemon=0.7-4+b1 \
                 netatalk=3.1.12~ds-3 && \
               apt-get -qq autoremove      && \
