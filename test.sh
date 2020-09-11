@@ -15,7 +15,7 @@ fi
 
 if [ ! "$TEST_DOES_NOT_BUILD" ]; then
   [ ! -e "./refresh.sh" ] || ./refresh.sh
-  if ! ./build.sh --progress plain --set default.platform=linux/arm64; then
+  if ! ./hack/cue-bake image --inject platforms=linux/arm64; then
     >&2 printf "Failed building image\n"
     exit 1
   fi

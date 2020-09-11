@@ -22,8 +22,21 @@ jobs:
 
       - name: Install hadolint
         run: |
-          curl -sL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-$(uname -s)-$(uname -m)"
+          curl --proto '=https' --tlsv1.2 -sSfL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-$(uname -s)-$(uname -m)"
           chmod 700 ./hadolint
+
+      - name: Install cuelang
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL -o cue.tar.gz "https://github.com/cuelang/cue/releases/download/v0.3.0-alpha1/cue_0.3.0-alpha1_$(uname -s)_$(uname -m).tar.gz"
+          tar -xf cue.tar.gz
+          rm cue.tar.gz
+
+      - name: Install buildctl
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL -o buildctl.tar.gz "https://github.com/moby/buildkit/releases/download/v0.7.2/buildkit-v0.7.2.linux-amd64.tar.gz"
+          tar -xf buildctl.tar.gz
+          rm buildctl.tar.gz
+          mv bin/buildctl .
 
       - name: Start apt proxy
         run: |
@@ -34,10 +47,10 @@ jobs:
       - name: Install multi-arch buildx environment
         run: |
           # Install buildx from our container
-          docker run --name installbuildx dubodubonduponey/utils /dist/buildx version
-          mkdir -p ~/.docker/cli-plugins
-          docker cp installbuildx:/dist/buildx ~/.docker/cli-plugins/docker-buildx
-          docker rm -f installbuildx
+          # docker run --name installbuildx dubodubonduponey/utils /dist/buildx version
+          # mkdir -p ~/.docker/cli-plugins
+          # docker cp installbuildx:/dist/buildx ~/.docker/cli-plugins/docker-buildx
+          # docker rm -f installbuildx
           # Enable multi-arch building
           docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
 
