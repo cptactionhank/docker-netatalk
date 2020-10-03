@@ -1,17 +1,30 @@
 #!/usr/bin/env bash
 set -o errexit -o errtrace -o functrace -o nounset -o pipefail
 
+# Where to put buildctl if it's not in the path
+BIN_LOCATION="$HOME/Projects/Command/bin"
+BUILDKIT_IMAGE="dubodubonduponey/buildkit"
+BUILDCTL_IMAGE="dubodubonduponey/buildkit"
+
 # shellcheck source=/dev/null
 root="$(cd "$(dirname "${BASH_SOURCE[0]:-$PWD}")" 2>/dev/null 1>&2 && pwd)/../"
 
+setup::docker(){
+  if ! command -v docker > /dev/null; then
+    >&2 printf "You need to install docker on your system\n"
+    return 1
+  fi
+}
+
 setup::cue(){
-  if ! command -v cue; then
+  if ! command -v cue > /dev/null; then
     case $(uname) in
       "Darwin")
         if command -v brew; then
           echo "You miss the cue binary. We can install that for you using brew. Press enter if you want that, CTRL+C otherwise."
           read -r
           brew install cue
+          return
         fi
       ;;
     esac
@@ -20,33 +33,39 @@ setup::cue(){
   fi
 }
 
-setup::docker(){
-  if ! command -v docker; then
-    echo "You need to install docker on your system"
-    return 1
-  fi
-
-}
-
 setup::buildctl(){
-  if ! command -v buildctl; then
+  local destination="$1"
+  if ! command -v "$destination/buildctl" > /dev/null; then
+    mkdir -p "$destination"
+    docker rm -f installbuildctl || true
+    docker run --name installbuildctl --entrypoint buildctl "$BUILDCTL_IMAGE" --version
     case $(uname) in
       "Darwin")
-        if command -v brew; then
-          echo "You miss the buildctl binary. We can install that for you using brew. Press enter if you want that, CTRL+C otherwise."
-          read -r
-          brew install buildkit
-        fi
+        docker cp installbuildctl:/boot/bin/buildctl_mac "$destination/buildctl"
+      ;;
+      "Linux")
+        docker cp installbuildctl:/boot/bin/buildctl "$destination/buildctl"
+      ;;
+      *)
+        >&2 printf "You need to install buildctl on your system: https://github.com/moby/buildkit#quick-start and copy it in %s\n" "$destination"
+        return 1
       ;;
     esac
-    echo "You need to install buildctl on your system: https://github.com/moby/buildkit#quick-start"
-    return 1
+    docker rm -f installbuildctl
   fi
 }
 
 setup::buildkit(){
-  docker inspect buildkit-cue-bake 1>/dev/null 2>&1 || \
-    docker run --name buildkit-cue-bake --rm -d --privileged -p 4242:4242 moby/buildkit --addr tcp://0.0.0.0:4242
+  docker inspect dbdbdp-buildkit 1>/dev/null 2>&1 || \
+    docker run --rm \
+      -d -p 4242:4242 \
+      --name dbdbdp-buildkit \
+      --user root \
+      --entrypoint buildkitd \
+      --privileged \
+      "$BUILDKIT_IMAGE" \
+        --root /data/buildkit --addr tcp://0.0.0.0:4242
+#      --read-only \
 }
 
 # Automated metadata
@@ -73,29 +92,28 @@ export BUILD_REVISION="$REVISION"
 export BUILD_URL="$URL"
 
 case "${1:-}" in
-  "--help")
-    echo "help?"
+  "--version")
     exit
   ;;
-  "init")
-    setup::cue
-    setup::docker
-    setup::buildctl
-  ;;
   *)
-    target="${1:-default}"
-    shift || true
+    setup::docker
+    setup::cue
+    setup::buildctl "$BIN_LOCATION"
+
     # Setup buildkitd container optionally
     if [ ! "${BUILDKIT_HOST:-}" ]; then
       BUILDKIT_HOST=tcp://0.0.0.0:4242
-      setup::buildkit > /dev/null
+      setup::buildkit
     fi
     export BUILDKIT_HOST
 
+    target="${1:-image}"
+    shift || true
+
     cd "$root"
-    com="BUILDKIT_HOST=$BUILDKIT_HOST cue "$@" "$target" "$root/hack/frontends/bake_tool.cue" "$root/hack/frontends/dbdbdp_tool.cue" "$root/bake_tool.cue""
-    >&2 printf "Debug, will do: %s\n" "$com"
-    cue "$@" "$target" "$root/hack/frontends/bake_tool.cue" "$root/hack/frontends/dbdbdp_tool.cue" "$root/bake_tool.cue" || {
+    com=(cue "$@" "$target" "$root/hack/frontends/bake_tool.cue" "$root/hack/frontends/dbdbdp_tool.cue" "$root/bake_tool.cue")
+    >&2 printf "Debug, will do: %s\n" "BUILDKIT_HOST=$BUILDKIT_HOST ${com[*]}"
+    "${com[@]}" || {
       cd - > /dev/null
       echo "Execution failure"
       exit 1

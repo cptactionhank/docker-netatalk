@@ -6,7 +6,7 @@ import (
 
 #Dubo: #Bake & {
   args: os.Getenv & {
-    DEBOOTSTRAP_DATE: string | * "2020-09-01"
+    DEBOOTSTRAP_DATE: string | * "2020-10-01"
     DEBOOTSTRAP_SUITE: string | * "buster"
     BUILD_CREATED: string | *"1900-01-01",
     BUILD_URL: string | *"https://github.com/dubo-dubon-duponey/unknown",
