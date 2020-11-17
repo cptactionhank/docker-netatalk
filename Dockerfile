@@ -4,7 +4,7 @@ ARG           RUNTIME_BASE=dubodubonduponey/base:runtime
 #######################
 # Extra builder for healthchecker
 #######################
-# hadolint ignore=DL3006
+# hadolint ignore=DL3006,DL3029
 FROM          --platform=$BUILDPLATFORM $BUILDER_BASE                                                                   AS builder-healthcheck
 
 ARG           GIT_REPO=github.com/dubo-dubon-duponey/healthcheckers
@@ -77,4 +77,4 @@ VOLUME        /media/home
 VOLUME        /media/share
 VOLUME        /media/timemachine
 
-# HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=1 CMD http-health || exit 1
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=1 CMD http-health || exit 1

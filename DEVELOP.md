@@ -51,7 +51,7 @@ export APT_OPTIONS=""
 # If you want to use entirely different sources.list
 export APT_SOURCES
 # If you need to trust additional GPG keys
-export APT_TRUSTED
+export APT_GPG_KEYRING
 
 # Self-explanatory
 export http_proxy

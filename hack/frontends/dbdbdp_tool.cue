@@ -6,8 +6,9 @@ import (
 
 #Dubo: #Bake & {
   args: os.Getenv & {
-    DEBOOTSTRAP_DATE: string | * "2020-10-01"
+    DEBOOTSTRAP_DATE: string | * "2020-11-10"
     DEBOOTSTRAP_SUITE: string | * "buster"
+
     BUILD_CREATED: string | *"1900-01-01",
     BUILD_URL: string | *"https://github.com/dubo-dubon-duponey/unknown",
     BUILD_DOCUMENTATION: string | *"\(BUILD_URL)/blob/master/README.md",
@@ -20,9 +21,14 @@ import (
 
     http_proxy: string | * ""
     https_proxy: string | * ""
+    SYSTEM_TLS_CA: string | * ""
+    SYSTEM_NETRC: string | * ""
+
     APT_OPTIONS: string | * "Acquire::HTTP::User-Agent=DuboDubonDuponey/0.1 Acquire::Check-Valid-Until=no"
+    APT_GPG_KEYRING: string | * ""
+    APT_TLS_CA: string | * ""
+    APT_NETRC: string | * ""
     APT_SOURCES: string | * ""
-    APT_TRUSTED: string | * ""
 
     GOPROXY: string | * ""
     GO111MODULE: string | * "on"

@@ -22,10 +22,11 @@ jobs:
 
       - name: Install hadolint
         run: |
-          curl --proto '=https' --tlsv1.2 -sSfL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v1.18.0/hadolint-$(uname -s)-$(uname -m)"
+          curl --proto '=https' --tlsv1.2 -sSfL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v1.18.2/hadolint-$(uname -s)-$(uname -m)"
           chmod 700 ./hadolint
 
       - name: Install cuelang
+        # XXX move to alpha4 ASAP
         run: |
           curl --proto '=https' --tlsv1.2 -sSfL -o cue.tar.gz "https://github.com/cuelang/cue/releases/download/v0.3.0-alpha1/cue_0.3.0-alpha1_$(uname -s)_$(uname -m).tar.gz"
           tar -xf cue.tar.gz
@@ -45,6 +46,7 @@ jobs:
           docker run -d --name aptcache --read-only --cap-drop=ALL --volume $GITHUB_WORKSPACE/cache/apt:/data --expose 3142 dubodubonduponey/aptutil:buster-2020-08-01
 
       - name: Install multi-arch buildx environment
+        # XXX replace by our own image binfmt call
         run: |
           # Install buildx from our container
           # docker run --name installbuildx dubodubonduponey/utils /dist/buildx version
@@ -55,8 +57,10 @@ jobs:
           docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
 
       - name: test
+        # XXX move to GH registry instead of Docker Hub for our base image
         run: |
           PATH=$PATH:$(pwd)
           cd "$GITHUB_WORKSPACE"
-          APT_OPTIONS="Acquire::HTTP::proxy=http://$(docker inspect aptcache | jq -rc .[0].NetworkSettings.Networks.bridge.IPAddress):3142"
+          export APT_OPTIONS="Acquire::HTTP::proxy=http://$(docker inspect aptcache | jq -rc .[0].NetworkSettings.Networks.bridge.IPAddress):3142 Acquire::HTTP::User-Agent=GH-DuboDubonDuponey/0.1 Acquire::Check-Valid-Until=no"
+          # export BASE_BASE="ghcr.io/dubo-dubon-duponey/base"
           ./test.sh

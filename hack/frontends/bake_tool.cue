@@ -73,6 +73,11 @@ env: os.Getenv & {}
   // reargs: [ for key, item in args {"--opt=build-arg:\(key)=\(item)"} ]
   // ["--opt=build-arg:\(key)=\(item)" for key, item in args]
 
+  xxx: exec.Run & {
+    cmd: ["echo", "workarounding cue broken env behavior"]
+    $after: [env]
+  }
+
   debug: exec.Run & {
     cmd: [
       "echo",
@@ -108,7 +113,7 @@ env: os.Getenv & {}
       "--opt", "filename=\(dockerfile)",
       "--opt", "platform=\(strings.Join(platforms, ","))",
     ]
-    $after: [env]
+    $after: [xxx]
     // stdout: string // capture stdout
   }
 
@@ -147,7 +152,7 @@ env: os.Getenv & {}
       "--opt", "platform=\(strings.Join(platforms, ","))",
       "--progress", "\(progress)"
     ]
-    $after: [env]
+    $after: [debug]
   }
 }
     // XXX what does buildkit do in that case? is it a dockerfile.v0 opt?
