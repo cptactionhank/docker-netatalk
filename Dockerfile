@@ -1,37 +1,28 @@
-ARG           BUILDER_BASE=dubodubonduponey/base:builder
-ARG           RUNTIME_BASE=dubodubonduponey/base:runtime
+ARG           FROM_REGISTRY=ghcr.io/dubo-dubon-duponey
 
-#######################
-# Extra builder for healthchecker
-#######################
-# hadolint ignore=DL3006,DL3029
-FROM          --platform=$BUILDPLATFORM $BUILDER_BASE                                                                   AS builder-healthcheck
-
-ARG           GIT_REPO=github.com/dubo-dubon-duponey/healthcheckers
-ARG           GIT_VERSION=51ebf8ca3d255e0c846307bf72740f731e6210c3
-
-WORKDIR       $GOPATH/src/$GIT_REPO
-RUN           git clone git://$GIT_REPO .
-RUN           git checkout $GIT_VERSION
-# hadolint ignore=DL4006
-RUN           env GOOS=linux GOARCH="$(printf "%s" "$TARGETPLATFORM" | sed -E 's/^[^/]+\/([^/]+).*/\1/')" go build -v -ldflags "-s -w" \
-                -o /dist/boot/bin/http-health ./cmd/http
+ARG           FROM_IMAGE_RUNTIME=base:runtime-bullseye-2021-07-01@sha256:9f5b20d392e1a1082799b3befddca68cee2636c72c502aa7652d160896f85b36
 
 #######################
 # Running image
 #######################
-# hadolint ignore=DL3006
-FROM          $RUNTIME_BASE
+FROM          $FROM_REGISTRY/$FROM_IMAGE_RUNTIME
 
 # hadolint ignore=DL3002
 USER          root
 
 # Install dependencies and tools
-RUN           apt-get update -qq && \
+RUN           --mount=type=secret,uid=100,id=CA \
+              --mount=type=secret,uid=100,id=CERTIFICATE \
+              --mount=type=secret,uid=100,id=KEY \
+              --mount=type=secret,uid=100,id=GPG.gpg \
+              --mount=type=secret,id=NETRC \
+              --mount=type=secret,id=APT_SOURCES \
+              --mount=type=secret,id=APT_CONFIG \
+              apt-get update -qq && \
               apt-get install -qq --no-install-recommends \
-                dbus=1.12.20-0+deb10u1 \
-                avahi-daemon=0.7-4+b1 \
-                netatalk=3.1.12~ds-3 && \
+                dbus=1.12.20-2 \
+                avahi-daemon=0.8-5 \
+                netatalk=3.1.12~ds-8 && \
               apt-get -qq autoremove      && \
               apt-get -qq clean           && \
               rm -rf /var/lib/apt/lists/* && \
@@ -57,7 +48,6 @@ RUN           dbus-uuidgen --ensure \
 # COPY          --from=builder-healthcheck /dist/boot/bin           /dist/boot/bin
 # RUN           chmod 555 /dist/boot/bin/*
 
-
 VOLUME        /etc
 VOLUME        /var/log
 VOLUME        /data
@@ -76,5 +66,3 @@ ENV           NAME=TotaleCroquette
 VOLUME        /media/home
 VOLUME        /media/share
 VOLUME        /media/timemachine
-
-# HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=1 CMD http-health || exit 1
