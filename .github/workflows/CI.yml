@@ -20,47 +20,34 @@ jobs:
           path: $GITHUB_WORKSPACE/cache
           key: cache
 
+        # XXX move to container tooling
       - name: Install hadolint
         run: |
-          curl --proto '=https' --tlsv1.2 -sSfL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v1.18.2/hadolint-$(uname -s)-$(uname -m)"
+          curl --proto '=https' --tlsv1.3 -sSfL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v2.5.0/hadolint-$(uname -s)-$(uname -m)"
           chmod 700 ./hadolint
 
-      - name: Install cuelang
-        # XXX move to alpha4 ASAP
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSfL -o cue.tar.gz "https://github.com/cuelang/cue/releases/download/v0.3.0-alpha1/cue_0.3.0-alpha1_$(uname -s)_$(uname -m).tar.gz"
-          tar -xf cue.tar.gz
-          rm cue.tar.gz
-
-      - name: Install buildctl
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSfL -o buildctl.tar.gz "https://github.com/moby/buildkit/releases/download/v0.7.2/buildkit-v0.7.2.linux-amd64.tar.gz"
-          tar -xf buildctl.tar.gz
-          rm buildctl.tar.gz
-          mv bin/buildctl .
-
+      # XXX update this to a more recent apt proxy
       - name: Start apt proxy
         run: |
           mkdir -p "$GITHUB_WORKSPACE/cache/apt"
           chmod a+rwx "$GITHUB_WORKSPACE/cache/apt"
-          docker run -d --name aptcache --read-only --cap-drop=ALL --volume $GITHUB_WORKSPACE/cache/apt:/data --expose 3142 dubodubonduponey/aptutil:buster-2020-08-01
-
-      - name: Install multi-arch buildx environment
-        # XXX replace by our own image binfmt call
-        run: |
-          # Install buildx from our container
-          # docker run --name installbuildx dubodubonduponey/utils /dist/buildx version
-          # mkdir -p ~/.docker/cli-plugins
-          # docker cp installbuildx:/dist/buildx ~/.docker/cli-plugins/docker-buildx
-          # docker rm -f installbuildx
-          # Enable multi-arch building
-          docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+          docker run --rm -d --pull always \
+            --name apt-cache \
+            --read-only \
+            --cap-drop=ALL \
+            --expose 3142 \
+            --volume $GITHUB_WORKSPACE/cache/apt:/data \
+              dubodubonduponey/aptutil:buster-2020-08-01
 
       - name: test
-        # XXX move to GH registry instead of Docker Hub for our base image
         run: |
-          PATH=$PATH:$(pwd)
+          # Hiding the read-only token base64 to avoid github disabling it...
+          echo OWMyMGVhYzk4N2NhYWQxYmI3MzhmNTZkODNmOGMwOGJjZjlhNDc4YQo= | base64 -d | docker login ghcr.io -u dubo-dubon-duponey --password-stdin
+          # Set the path
+          export BIN_LOCATION="."
+          PATH="$BIN_LOCATION:$PATH"
           cd "$GITHUB_WORKSPACE"
-          export APT_OPTIONS="Acquire::HTTP::proxy=http://$(docker inspect aptcache | jq -rc .[0].NetworkSettings.Networks.bridge.IPAddress):3142 Acquire::HTTP::User-Agent=GH-DuboDubonDuponey/0.1 Acquire::Check-Valid-Until=no"
-          # export BASE_BASE="ghcr.io/dubo-dubon-duponey/base"
-          ./test.sh
+          # Lint
+          ./hack/lint.sh
+          # Test, with our injected proxy and environment
+          ./hack/test.sh --inject apt_proxy="http://$(docker inspect apt-cache | jq -rc .[0].NetworkSettings.Networks.bridge.IPAddress):3142" ".github/workflows/environment.cue"

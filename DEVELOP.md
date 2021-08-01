@@ -5,25 +5,23 @@
 ### TL;DR
 
 ```bash
-./hack/cue-bake image --inject tags=registry/you/image
+./hack/build.sh image --inject tags=registry/you/image
 ```
 
 ### The what
 
-This image is built using: `dubodubonduponey/base:builder-$DEBOOTSTRAP_SUITE-$DEBOOTSTRAP_DATE` 
+This image is built using: `ghcr.io/dubo-dubon-duponey/base:builder-bullseye-2021-07-01` 
 
-The runtime part is based on: `dubodubonduponey/base:runtime-$DEBOOTSTRAP_SUITE-$DEBOOTSTRAP_DATE`
+The runtime part is based on: `ghcr.io/dubo-dubon-duponey/base:runtime-bullseye-2021-07-01`
 
-Both these images are built upon: `dubodubonduponey/debian:$DEBOOTSTRAP_SUITE-$DEBOOTSTRAP_DATE`, a debootstrapped version of Debian ("buster" at this time), built from a snapshot at `$DEBOOTSTRAP_DATE`.
-
-At the time of this writing, `DEBOOTSTRAP_DATE` evaluates to `2020-09-01`, and is updated every 15 days.
+Both these images are built upon: `ghcr.io/dubo-dubon-duponey/debian:bullseye-2021-07-01`, a debootstrapped version of Debian ("bullseye" at this time), built from a snapshot at 2021-07-01.
 
 You can find out more here:
 
  * https://github.com/dubo-dubon-duponey/docker-debian for the debootstrapped Debian base
  * https://github.com/dubo-dubon-duponey/docker-base for the builder and runtime images
 
-These images provide very little - they are (mostly) barebone Buster with some ONBUILD
+These images provide very little - they are (mostly) barebone bullseye with some ONBUILD
 Docker syntactic sugar (metadata, user creation, entrypoint).
 
 Let me repeat: you have very little reason to go and add anything up there.
@@ -31,39 +29,18 @@ Let me repeat: you have very little reason to go and add anything up there.
 ### Configuration reference
 
 ```bash
-# Have a look at the bake_tool.cue file if you want to modify hard-wired values (image title and description for example)
+# Have a look at the hack/recipe.cue file if you want to modify hard-wired values
 
 # The following flags are currently supported:
 
 # Override default platform choice (not all images allow that):
-./hack/cue-bake image --inject platforms="linux/amd64,linux/arm/v7"
+./hack/build.sh image --inject platforms="linux/amd64,linux/arm/v7"
 
 # Specify a collection of tags to push to
-./hack/cue-bake image --inject tags="registry1/name/image,registry2/name/image:tag"
+./hack/build.sh image --inject tags="registry1/name/image,registry2/name/image:tag"
 
 # Bust cache
-./hack/cue-bake image --inject no_cache=true
-
-# Environment variables you may tweak
-
-# Space-separated options to be passed to apt-get
-export APT_OPTIONS=""
-# If you want to use entirely different sources.list
-export APT_SOURCES
-# If you need to trust additional GPG keys
-export APT_GPG_KEYRING
-
-# Self-explanatory
-export http_proxy
-export https_proxy
-
-# Which base date you want to use (eg: 2020-09-01)
-export DEBOOTSTRAP_DATE
-# Which base suite you want to use (only buster exist for now)
-export DEBOOTSTRAP_SUITE
-
-# Allows you to pass a goproxy
-export GOPROXY
+./hack/build.sh image --inject no_cache=true
 ```
 
 ## Develop
@@ -72,13 +49,13 @@ export GOPROXY
 
 Hack away.
 
-Be sure to run `./test.sh` before submitting anything.
+Be sure to run `./hack/lint.sh` and `./hack/test.sh` before submitting anything.
 
 ### About branches
 
-`master` is the currently stable version that published images are based on.
+`master` is usually outdated, but stable
 
-`work` is a development branch, with possibly unstable / dramatic changes.
+`work` is a development branch, with possibly unstable / dramatic changes
 
 ### Philosophy
 

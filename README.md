@@ -4,35 +4,40 @@ A docker image for [Apple Filing Protocol](https://en.wikipedia.org/wiki/Apple_F
 
 Specifically useful as a Time Machine server.
 
+Future development will focus on Samba / vfs_fruit instead. https://www.reddit.com/r/homelab/comments/83vkaz/howto_make_time_machine_backups_on_a_samba/
+
 ## Image features
 
- * multi-architecture:
-    * [x] linux/amd64
-    * [x] linux/arm64
-    * [x] linux/arm/v7
-    * [ ] linux/arm/v6 (should build, disabled by default)
- * hardened:
-    * [x] image runs read-only
-    * [ ] image runs with the following capabilities:
-        * NET_BIND_SERVICE
-        * CHOWN
-        * FOWNER
-        * SETUID
-        * SETGID
-        * DAC_OVERRIDE
-    * [ ] process runs as a non-root user, disabled login, no shell
-        * the entrypoint script still runs as root before dropping privileges (due to avahi-daemon)
- * lightweight
-    * [x] based on our slim [Debian buster version](https://github.com/dubo-dubon-duponey/docker-debian)
-    * [x] simple entrypoint script
-    * [ ] multi-stage build with ~~no installed~~ dependencies for the runtime image:
-        * dbus
-        * avahi-daemon
-        * netatalk
- * observable
-    * [ ] ~~healthcheck~~
-    * [x] log to stdout
-    * [ ] ~~prometheus endpoint~~ not applicable
+* multi-architecture:
+  * [x] linux/amd64
+  * [x] linux/386
+  * [x] linux/arm64
+  * [x] linux/arm/v7
+  * [x] linux/arm/v6
+  * [x] linux/ppc64
+  * [x] linux/s390x
+* hardened:
+  * [x] image runs read-only
+  * [ ] image runs with the following capabilities:
+    * NET_BIND_SERVICE
+    * CHOWN
+    * FOWNER
+    * SETUID
+    * SETGID
+    * DAC_OVERRIDE
+  * [ ] process runs as a non-root user, disabled login, no shell
+    * the entrypoint script still runs as root before dropping privileges (due to avahi-daemon)
+* lightweight
+  * [x] based on our slim [Debian bullseye version (2021-07-01)](https://github.com/dubo-dubon-duponey/docker-debian)
+  * [x] simple entrypoint script
+  * [ ] multi-stage build with ~~no installed~~ dependencies for the runtime image:
+    * dbus
+    * avahi-daemon
+    * netatalk
+* observable
+  * [ ] ~~healthcheck~~
+  * [x] log to stdout
+  * [ ] ~~prometheus endpoint~~
 
 ## Run
 
