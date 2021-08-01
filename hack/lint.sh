@@ -3,7 +3,8 @@ set -o errexit -o errtrace -o functrace -o nounset -o pipefail
 
 # Get where we are
 # shellcheck source=/dev/null
-readonly root="$(cd "$(dirname "${BASH_SOURCE[0]:-$PWD}")" 2>/dev/null 1>&2 && pwd)/../"
+root="$(cd "$(dirname "${BASH_SOURCE[0]:-$PWD}")" 2>/dev/null 1>&2 && pwd)/../"
+readonly root
 
 # Make sure we have our tools in place
 # shellcheck source=/dev/null
