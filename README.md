@@ -28,7 +28,7 @@ Future development will focus on Samba / vfs_fruit instead. https://www.reddit.c
   * [ ] process runs as a non-root user, disabled login, no shell
     * the entrypoint script still runs as root before dropping privileges (due to avahi-daemon)
 * lightweight
-  * [x] based on our slim [Debian bullseye version (2021-07-01)](https://github.com/dubo-dubon-duponey/docker-debian)
+  * [x] based on our slim [Debian bullseye version (2021-08-01)](https://github.com/dubo-dubon-duponey/docker-debian)
   * [x] simple entrypoint script
   * [ ] multi-stage build with ~~no installed~~ dependencies for the runtime image:
     * dbus

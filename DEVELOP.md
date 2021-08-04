@@ -10,11 +10,11 @@
 
 ### The what
 
-This image is built using: `ghcr.io/dubo-dubon-duponey/base:builder-bullseye-2021-07-01` 
+This image is built using: `ghcr.io/dubo-dubon-duponey/base:builder-bullseye-2021-08-01` 
 
-The runtime part is based on: `ghcr.io/dubo-dubon-duponey/base:runtime-bullseye-2021-07-01`
+The runtime part is based on: `ghcr.io/dubo-dubon-duponey/base:runtime-bullseye-2021-08-01`
 
-Both these images are built upon: `ghcr.io/dubo-dubon-duponey/debian:bullseye-2021-07-01`, a debootstrapped version of Debian ("bullseye" at this time), built from a snapshot at 2021-07-01.
+Both these images are built upon: `ghcr.io/dubo-dubon-duponey/debian:bullseye-2021-08-01`, a debootstrapped version of Debian ("bullseye" at this time), built from a snapshot at 2021-08-01.
 
 You can find out more here:
 
