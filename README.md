@@ -1,3 +1,5 @@
+<!> TENTATIVELY DEPRECATED in favor of https://github.com/dubo-dubon-duponey/samba <!>
+
 # What
 
 A docker image for [Apple Filing Protocol](https://en.wikipedia.org/wiki/Apple_Filing_Protocol) file sharing, Tracker (search/spotlight integration), and mDNS server for service discovery.
@@ -15,7 +17,7 @@ Future development will focus on Samba / vfs_fruit instead. https://www.reddit.c
   * [x] linux/arm/v7
   * [x] linux/arm/v6
   * [x] linux/ppc64
-  * [x] linux/s390x
+  * [ ] linux/s390x
 * hardened:
   * [x] image runs read-only
   * [ ] image runs with the following capabilities:
