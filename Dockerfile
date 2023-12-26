@@ -1,49 +1,49 @@
-FROM alpine:latest as builder
-ENV NETATALK_VERSION 3.1.11
+FROM ubuntu:22.04 as builder
+ENV NETATALK_VERSION 3.1.18
 
 WORKDIR /
 
 # Prerequisites
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache \
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
       bash \
       curl \
-      libldap \
-      libgcrypt \
-      python \
+      libldap-2.5-0 \
+      libgcrypt20 \
+      python3 \
       dbus \
-      dbus-glib \
-      py-dbus \
-      linux-pam \
-      cracklib \
-      db \
-      libevent \
+      dbus-x11 \
+      python3-dbus \
+      libpam0g \
+      libcrack2 \
+      libdb5.3 \
+      libevent-2.1-7 \
       file \
       acl \
-      openssl \
-      avahi \
-      tdb-libs \
+      avahi-daemon \
+      libtdb1 \
       supervisor && \
-    apk add --no-cache --virtual .build-deps \
-      build-base \
+    apt-get install -y --no-install-recommends \
+      build-essential \
       autoconf \
       automake \
       libtool \
-      libgcrypt-dev \
-      linux-pam-dev \
-      krb5-dev \
-      tdb-dev \
-      cracklib-dev \
-      acl-dev \
-      db-dev \
-      dbus-dev \
+      libgcrypt20-dev \
+      libpam0g-dev \
+      libkrb5-dev \
+      libtdb-dev \
+      libcrack2-dev \
+      libacl1-dev \
+      libdb-dev \
+      libdbus-1-dev \
       libevent-dev && \
-    ln -s -f /bin/true /usr/bin/chfn && \
     cd /tmp
 
-RUN    curl -o netatalk-${NETATALK_VERSION}.tar.gz -L https://downloads.sourceforge.net/project/netatalk/netatalk/${NETATALK_VERSION}/netatalk-${NETATALK_VERSION}.tar.gz && \
-    tar xvf netatalk-${NETATALK_VERSION}.tar.gz && \
+# removed libssl1.1 
+
+RUN    curl -o netatalk-${NETATALK_VERSION}.tar.bz2 -L https://github.com/Netatalk/netatalk/releases/download/netatalk-$(echo $NETATALK_VERSION | tr '.' '-')/netatalk-${NETATALK_VERSION}.tar.bz2 && \
+    tar xvf netatalk-${NETATALK_VERSION}.tar.bz2 && \
     cd netatalk-${NETATALK_VERSION} && \
     CFLAGS="-Wno-unused-result -O2" ./configure \
       --prefix=/usr \
@@ -60,8 +60,10 @@ RUN    curl -o netatalk-${NETATALK_VERSION}.tar.gz -L https://downloads.sourcefo
       make && \
       make install && \
       cd /tmp && \
-      rm -rf netatalk-${NETATALK_VERSION} netatalk-${NETATALK_VERSION}.tar.gz && \
-      apk del .build-deps
+      rm -rf netatalk-${NETATALK_VERSION} netatalk-${NETATALK_VERSION}.tar.bz2 && \
+      apt-get autoremove -y && \
+      apt-get clean && \
+      rm -rf /var/lib/apt/lists/*
 
 COPY files/run.sh /run.sh
 COPY files/afp.conf /etc/afp.conf

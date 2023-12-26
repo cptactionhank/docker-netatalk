@@ -1,4 +1,5 @@
-version: '2'
+version: '3.8'
+
 services:
   netatalk:
     image: unxmaal/netatalk:latest
@@ -6,15 +7,16 @@ services:
     ports:
       - "548:548"
     volumes:
-     - /opt/netatalk:/media/share
-    network_mode: "host"
+      - /Volumes/Raid/mac:/media/share
     restart: always
     environment:
-      - AVAHI=1
-      - AFP_USER=edodd
-      - AFP_PASSWORD=secret
-      - AFP_UID=1000
-      - AFP_GID=1000
+      AVAHI: "1"
+      AFP_USER: "edodd"
+      AFP_PASSWORD: "secret"
+      AFP_UID: "1000"
+      AFP_GID: "1000"
+
 volumes:
   netatalk_data:
     driver: local
+

@@ -2,7 +2,7 @@
 
 setup(){
     if [[ -n "${AFP_USER}" ]]; then
-        adduser -u ${AFP_UID} -g ${AFP_GID} -D -s /bin/bash "${AFP_USER}"
+        useradd -s /usr/bin/bash -m "${AFP_USER}"
         if [[ -n "${AFP_PASSWORD}" ]]; then
             echo "${AFP_USER}:${AFP_PASSWORD}" | chpasswd
         fi
